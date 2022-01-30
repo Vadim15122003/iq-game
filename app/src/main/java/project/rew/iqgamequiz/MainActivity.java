@@ -46,13 +46,15 @@ public class MainActivity extends AppCompatActivity {
         });
 
         if (mAuth.getCurrentUser() != null) {
-            DocumentReference documentReference = fstore.collection("users").document(mAuth.getCurrentUser().getUid());
+            DocumentReference documentReference = fstore.collection("users").document(mAuth.getCurrentUser().getEmail());
             documentReference.addSnapshotListener(new EventListener<DocumentSnapshot>() {
                 @Override
                 public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
                         if (value != null) {
-                            coins.setText(value.get("IqCoins").toString());
-                            glory.setText(value.get("glory").toString());
+                            if (value.exists()) {
+                                coins.setText(value.get("IqCoins").toString());
+                                glory.setText(value.get("glory").toString());
+                            }
                         }
                     }
             });

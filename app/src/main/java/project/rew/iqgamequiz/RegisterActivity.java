@@ -26,7 +26,7 @@ import static project.rew.iqgamequiz.LoginActivity.mAuth;
 
 public class RegisterActivity extends AppCompatActivity {
 
-    EditText inputEmail, inputPasword, inputConfirmPassword;
+    EditText inputEmail, inputPasword, inputConfirmPassword, inputUsername;
     TextView login;
     Button bttnRegister;
     String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]";
@@ -45,7 +45,8 @@ public class RegisterActivity extends AppCompatActivity {
         inputConfirmPassword = findViewById(R.id.inputConformPassword);
         bttnRegister = findViewById(R.id.btnRegister);
         progressDialog = new ProgressDialog(this);
-        fstore=FirebaseFirestore.getInstance();
+        inputUsername = findViewById(R.id.inputUsername);
+        fstore = FirebaseFirestore.getInstance();
 
 
         login.setOnClickListener(new View.OnClickListener() {
@@ -61,10 +62,15 @@ public class RegisterActivity extends AppCompatActivity {
                 String email = inputEmail.getText().toString();
                 String password = inputPasword.getText().toString();
                 String confirmPassword = inputConfirmPassword.getText().toString();
+                String userName = inputUsername.getText().toString();
                 if (email.matches(emailPattern)) {
                     inputEmail.setError("Enter a valid email");
                 } else if (password.isEmpty() || password.length() < 6) {
                     inputPasword.setError("Enter a password wich minim 6 charcters");
+                } else if (userName.length()<4) {
+                    inputUsername.setError("Enter a userName wich minim 4 charcaters");
+                } else if (userName.contains(" ")) {
+                    inputUsername.setError("Enter a userName wichout space");
                 } else if (!password.equals(confirmPassword)) {
                     inputConfirmPassword.setError("Paswseord is different");
                 } else {
@@ -78,12 +84,11 @@ public class RegisterActivity extends AppCompatActivity {
                         public void onComplete(Task<AuthResult> task) {
                             if (task.isSuccessful()) {
                                 progressDialog.dismiss();
-                                String userId = mAuth.getCurrentUser().getUid();
-                                DocumentReference documentReference = fstore.collection("users").document(userId);
-                                DocumentReference documentReference1 = fstore.collection("users").document(userId);
+                                DocumentReference documentReference = fstore.collection("users").document(email);
                                 Map<String, Object> user = new HashMap<>();
-                                user.put("IqCoins",0);
-                                user.put("glory",0);
+                                user.put("username",userName);
+                                user.put("IqCoins", 0);
+                                user.put("glory", 0);
                                 documentReference.set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void unused) {
