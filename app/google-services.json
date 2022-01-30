@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "757481446698",
+    "project_id": "iq-game-503a1",
+    "storage_bucket": "iq-game-503a1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:757481446698:android:dede9368bdd2b146655253",
+        "android_client_info": {
+          "package_name": "project.rew.iqgamequiz"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "757481446698-4h6bnski3p6at583mm7kcrsun3sensbu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDOK1XYEnwUb_tmWuoEPXXY6RZcoKJkwTg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "757481446698-4h6bnski3p6at583mm7kcrsun3sensbu.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
