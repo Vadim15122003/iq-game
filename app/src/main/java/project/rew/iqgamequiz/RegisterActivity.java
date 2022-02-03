@@ -69,6 +69,8 @@ public class RegisterActivity extends AppCompatActivity {
                     inputPasword.setError("Enter a password wich minim 6 charcters");
                 } else if (userName.length()<4) {
                     inputUsername.setError("Enter a userName wich minim 4 charcaters");
+                } else if (userName.length()>10) {
+                    inputUsername.setError("Enter a userName wich maxim 10 charcaters");
                 } else if (userName.contains(" ")) {
                     inputUsername.setError("Enter a userName wichout space");
                 } else if (!password.equals(confirmPassword)) {
@@ -89,6 +91,9 @@ public class RegisterActivity extends AppCompatActivity {
                                 user.put("username",userName);
                                 user.put("IqCoins", 0);
                                 user.put("glory", 0);
+                                Map<String,Object> titles=new HashMap<>();
+                                titles.put("beginer","Începător");
+                                user.put("titles",titles);
                                 documentReference.set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void unused) {

@@ -1,65 +1,61 @@
 package project.rew.iqgamequiz;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.view.WindowManager;
-import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
+
+import java.util.Objects;
+
+import project.rew.iqgamequiz.mainactivities.Friends;
+import project.rew.iqgamequiz.mainactivities.PlaySelectMode;
+import project.rew.iqgamequiz.mainactivities.Profile;
+import project.rew.iqgamequiz.mainactivities.Settings;
+import project.rew.iqgamequiz.mainactivities.TopGlory;
+import project.rew.iqgamequiz.utils.Constants;
 
 import static project.rew.iqgamequiz.LoginActivity.mAuth;
-import static project.rew.iqgamequiz.LoginActivity.mUser;
-import static project.rew.iqgamequiz.RegisterActivity.fstore;
 
 public class MainActivity extends AppCompatActivity {
+
+    TextView coins, glory, username, title;
+    ImageView profile_img, play, profile, friends, top_glory, settings;
+    FirebaseFirestore fstore;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+        fstore = FirebaseFirestore.getInstance();
         if (mAuth.getCurrentUser() == null)
             sendUserToLoginActivity();
 
-        Button btn = findViewById(R.id.button);
-        Button btn1 = findViewById(R.id.button3);
-        TextView coins, glory;
-        coins = findViewById(R.id.coins);
+        coins = findViewById(R.id.iq_coins);
         glory = findViewById(R.id.glory);
-        fstore = FirebaseFirestore.getInstance();
-        btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mAuth.signOut();
-                sendUserToLoginActivity();
-            }
-        });
+        username = findViewById(R.id.username);
+        title = findViewById(R.id.title);
+        profile_img = findViewById(R.id.profile_img);
+        play = findViewById(R.id.play);
+        profile = findViewById(R.id.profile);
+        friends = findViewById(R.id.friends);
+        top_glory = findViewById(R.id.top_glory);
+        settings = findViewById(R.id.settings);
 
-        if (mAuth.getCurrentUser() != null) {
-            DocumentReference documentReference = fstore.collection("users").document(mAuth.getCurrentUser().getEmail());
-            documentReference.addSnapshotListener(new EventListener<DocumentSnapshot>() {
-                @Override
-                public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
-                        if (value != null) {
-                            if (value.exists()) {
-                                coins.setText(value.get("IqCoins").toString());
-                                glory.setText(value.get("glory").toString());
-                            }
-                        }
-                    }
-            });
-        }
+        getData();
 
+        play.setOnClickListener(view -> openActivity(PlaySelectMode.class));
+        profile.setOnClickListener(view -> openActivity(Profile.class));
+        friends.setOnClickListener(view -> openActivity(Friends.class));
+        top_glory.setOnClickListener(view -> openActivity(TopGlory.class));
+        settings.setOnClickListener(view -> openActivity(Settings.class));
         /*btn1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -95,4 +91,28 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
         finish();
     }
+
+    private void getData(){
+        if (mAuth.getCurrentUser() != null) {
+            DocumentReference documentReference = fstore.collection("users").document(Objects.requireNonNull(mAuth.getCurrentUser().getEmail()));
+            documentReference.addSnapshotListener((value, error) -> {
+                if (value!=null) {
+                    if (value.exists()) {
+                        Constants.coins= Objects.requireNonNull(value.get("IqCoins")).toString()+" ";
+                        Constants.glory= Objects.requireNonNull(value.get("glory")).toString()+" ";
+                        Constants.username= Objects.requireNonNull(value.get("username")).toString();
+                        coins.setText(Constants.coins);
+                        glory.setText(Constants.glory);
+                        username.setText(Constants.username);
+                    }
+                }
+            });
+        }
+    }
+
+    private void openActivity(Class<?> cls){
+        Intent intent = new Intent(MainActivity.this,cls);
+        startActivity(intent);
+    }
+
 }

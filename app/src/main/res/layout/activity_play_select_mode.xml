@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background_main"
+    tools:context=".mainactivities.PlaySelectMode">
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/generalKnews"
+        android:layout_width="379dp"
+        android:layout_height="230dp"
+        android:layout_marginTop="100dp"
+        android:src="@drawable/button_play"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:shapeAppearanceOverlay="@style/CorenerCut" />
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/logic"
+        android:layout_width="379dp"
+        android:layout_height="230dp"
+        android:layout_marginBottom="100dp"
+        android:src="@drawable/button_play_logic"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:shapeAppearanceOverlay="@style/CorenerCut" />
+
+    <TextView
+        android:id="@+id/textView6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Conoștințe\ngenerale"
+        android:textAlignment="center"
+        android:textColor="#323232"
+        android:textSize="50sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/generalKnews"
+        app:layout_constraintEnd_toEndOf="@+id/generalKnews"
+        app:layout_constraintStart_toStartOf="@+id/generalKnews"
+        app:layout_constraintTop_toTopOf="@+id/generalKnews" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Logică"
+        android:textAlignment="center"
+        android:textColor="#323232"
+        android:textSize="70sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/logic"
+        app:layout_constraintEnd_toEndOf="@+id/logic"
+        app:layout_constraintStart_toStartOf="@+id/logic"
+        app:layout_constraintTop_toTopOf="@+id/logic" />
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -4,45 +4,254 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/background_main"
     tools:context=".MainActivity">
 
-    <Button
-        android:id="@+id/button"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:text="Logout"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="15dp"
+        android:background="@drawable/coins_bg"
+        android:gravity="center"
+        app:layout_constraintEnd_toStartOf="@+id/linearLayout2"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginStart="3dp"
+            android:layout_marginTop="3dp"
+            android:layout_marginBottom="3dp"
+            android:src="@drawable/glory_img" />
+
+        <TextView
+            android:id="@+id/glory"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:text="100 "
+            android:textSize="15sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="20dp"
+        android:background="@drawable/coins_bg"
+        android:gravity="center"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginStart="3dp"
+            android:layout_marginTop="3dp"
+            android:layout_marginBottom="3dp"
+            android:src="@drawable/iq_coin" />
+
+        <TextView
+            android:id="@+id/iq_coins"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:text="1456 "
+            android:textSize="15sp" />
+    </LinearLayout>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardView"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="45dp"
+        app:cardCornerRadius="15dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/profile_img"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:src="@drawable/simple_user" />
+    </androidx.cardview.widget.CardView>
+
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="269dp"
+        android:layout_height="90dp"
+        android:layout_marginStart="110dp"
+        android:layout_marginTop="50dp"
+        android:src="@drawable/player_prof"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/coins"
+    <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.501"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button" />
+        android:layout_height="45dp"
+        android:gravity="center"
+        app:layout_constraintStart_toEndOf="@+id/cardView"
+        app:layout_constraintTop_toTopOf="@+id/imageView2">
 
-    <TextView
-        android:id="@+id/glory"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/coins" />
+        <TextView
+            android:id="@+id/username"
+            style="bold"
+            android:layout_width="220dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:singleLine="true"
+            android:text="Username"
+            android:textColor="#000000"
+            android:textSize="30sp" />
+    </LinearLayout>
 
-    <Button
-        android:id="@+id/button3"
+    <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Button"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_height="45dp"
+        android:gravity="center"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView2"
+        app:layout_constraintStart_toEndOf="@+id/cardView">
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="170dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:singleLine="true"
+            android:text="Title Beginner"
+            android:textSize="18sp" />
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="170dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/glory" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/play"
+                android:layout_width="341dp"
+                android:layout_height="97dp"
+                android:src="@drawable/button_main"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/profile"
+                android:layout_width="341dp"
+                android:layout_height="97dp"
+                android:layout_marginTop="25dp"
+                android:src="@drawable/button_main"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/play" />
+
+            <ImageView
+                android:id="@+id/friends"
+                android:layout_width="341dp"
+                android:layout_height="97dp"
+                android:layout_marginTop="25dp"
+                android:src="@drawable/button_main"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/profile" />
+
+            <ImageView
+                android:id="@+id/top_glory"
+                android:layout_width="341dp"
+                android:layout_height="97dp"
+                android:layout_marginTop="25dp"
+                android:src="@drawable/button_main"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/friends" />
+
+            <ImageView
+                android:id="@+id/settings"
+                android:layout_width="341dp"
+                android:layout_height="97dp"
+                android:layout_marginTop="25dp"
+                android:src="@drawable/button_main"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/top_glory" />
+
+            <TextView
+                android:id="@+id/textView5"
+                android:layout_width="295dp"
+                android:layout_height="wrap_content"
+                android:text="JOACĂ"
+                android:textAlignment="center"
+                android:textSize="50sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="@+id/play"
+                app:layout_constraintEnd_toEndOf="@+id/play"
+                app:layout_constraintStart_toStartOf="@+id/play"
+                app:layout_constraintTop_toTopOf="@+id/play" />
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="295dp"
+                android:layout_height="wrap_content"
+                android:text="PROFIL"
+                android:textAlignment="center"
+                android:textSize="50sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="@+id/profile"
+                app:layout_constraintEnd_toEndOf="@+id/profile"
+                app:layout_constraintStart_toStartOf="@+id/profile"
+                app:layout_constraintTop_toTopOf="@+id/profile" />
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="295dp"
+                android:layout_height="wrap_content"
+                android:text="PRIETENI"
+                android:textAlignment="center"
+                android:textSize="50sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="@+id/friends"
+                app:layout_constraintEnd_toEndOf="@+id/friends"
+                app:layout_constraintStart_toStartOf="@+id/friends"
+                app:layout_constraintTop_toTopOf="@+id/friends" />
+
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="295dp"
+                android:layout_height="wrap_content"
+                android:text="TOP GLORY"
+                android:textAlignment="center"
+                android:textSize="50sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="@+id/top_glory"
+                app:layout_constraintEnd_toEndOf="@+id/top_glory"
+                app:layout_constraintStart_toStartOf="@+id/top_glory"
+                app:layout_constraintTop_toTopOf="@+id/top_glory" />
+
+            <TextView
+                android:id="@+id/textView4"
+                android:layout_width="295dp"
+                android:layout_height="wrap_content"
+                android:text="SETĂRI"
+                android:textAlignment="center"
+                android:textSize="50sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="@+id/settings"
+                app:layout_constraintEnd_toEndOf="@+id/settings"
+                app:layout_constraintStart_toStartOf="@+id/settings"
+                app:layout_constraintTop_toTopOf="@+id/settings" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
