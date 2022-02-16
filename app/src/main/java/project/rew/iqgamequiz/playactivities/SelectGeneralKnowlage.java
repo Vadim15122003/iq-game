@@ -23,6 +23,7 @@ import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
 
 import io.grpc.internal.ClientTransport;
+import project.rew.iqgamequiz.NivelSelect;
 import project.rew.iqgamequiz.Questions;
 import project.rew.iqgamequiz.R;
 
@@ -58,9 +59,8 @@ public class SelectGeneralKnowlage extends AppCompatActivity {
                 holder.cardView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Intent intent=new Intent(SelectGeneralKnowlage.this, Questions.class);
+                        Intent intent=new Intent(SelectGeneralKnowlage.this, NivelSelect.class);
                         intent.putExtra("categorie",getRef(position).getKey());
-                        intent.putExtra("id",model.getId());
                         startActivity(intent);
                     }
                 });

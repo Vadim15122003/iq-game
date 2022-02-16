@@ -12,6 +12,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.IQGame">
         <activity android:name=".Questions"></activity>
+        <activity android:name=".NivelSelect" />
+        <activity android:name=".Questions" />
         <activity
             android:name=".playactivities.SelectGeneralKnowlage"
             android:screenOrientation="portrait" />
