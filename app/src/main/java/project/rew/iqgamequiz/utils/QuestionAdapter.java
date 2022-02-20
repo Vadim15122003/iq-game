@@ -62,14 +62,14 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
     @Override
     public QuestionAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.maket_question, parent, false);
-        finish = new Dialog(context, R.style.Dialog);
+        finish = new Dialog(context, R.style.DialogTransparentBg);
         finish.setContentView(R.layout.dialog_finish_question);
         finish.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         finish.setCancelable(false);
         WindowManager.LayoutParams lp = finish.getWindow().getAttributes();
         lp.dimAmount = 0.8f;
         finish.getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
-        finish.getWindow().getAttributes().windowAnimations = R.style.animation;
+        finish.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
 
         back = finish.findViewById(R.id.back);
         replay = finish.findViewById(R.id.replay);
@@ -130,6 +130,8 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
 
             if (gresite == 3) {
                 finish.show();
+                dialog_coins.setText("0");
+                dialog_glory.setText("0");
             } else {
                 Handler handler = new Handler();
                 handler.postDelayed(new Runnable() {

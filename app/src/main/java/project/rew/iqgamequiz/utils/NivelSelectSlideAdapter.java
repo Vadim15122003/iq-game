@@ -1,5 +1,6 @@
 package project.rew.iqgamequiz.utils;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -67,8 +68,8 @@ public class NivelSelectSlideAdapter extends RecyclerView.Adapter<NivelSelectSli
         });
         holder.image.setOnClickListener(view -> {
             Intent intent = new Intent(context, Questions.class);
-            intent.putExtra("categorie",categorie);
-            intent.putExtra("nivel",position);
+            intent.putExtra("categorie", categorie);
+            intent.putExtra("nivel", position);
             context.startActivity(intent);
         });
     }

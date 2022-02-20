@@ -7,9 +7,15 @@ import androidx.viewpager2.widget.CompositePageTransformer;
 import androidx.viewpager2.widget.MarginPageTransformer;
 import androidx.viewpager2.widget.ViewPager2;
 
+import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
@@ -31,12 +37,16 @@ import project.rew.iqgamequiz.utils.QuestionAdapter;
 
 public class Questions extends AppCompatActivity {
     DatabaseReference ref;
+    String categorie;
     ViewPager2 viewPager;
     QuestionAdapter adapter;
     TextView textView, coins, glory;
     List<Question> questions = new ArrayList<>();
     CardView c1, c2, c3, c4, c5, c6, c7, c8, c9, c10;
     List<CardView> cards = new ArrayList<>();
+    ImageView pause, resume, restart, exit, e_yes, e_no, r_yes, r_no;
+    Dialog d_pause, d_exit, d_restart;
+    Window w_pause, w_exit, w_restart;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +54,7 @@ public class Questions extends AppCompatActivity {
         setContentView(R.layout.activity_question);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         viewPager = findViewById(R.id.viewpager);
-        String categorie = getIntent().getStringExtra("categorie");
+        categorie = getIntent().getStringExtra("categorie");
         int nivel = getIntent().getIntExtra("nivel", 0);
         textView = findViewById(R.id.text);
         coins = findViewById(R.id.iq_coins);
@@ -59,6 +69,45 @@ public class Questions extends AppCompatActivity {
         c8 = findViewById(R.id.c8);
         c9 = findViewById(R.id.c9);
         c10 = findViewById(R.id.c10);
+        pause = findViewById(R.id.pause);
+        d_pause = new Dialog(Questions.this, R.style.DialogTransparentBg);
+        d_exit = new Dialog(Questions.this, R.style.DialogTransparentBg);
+        d_restart = new Dialog(Questions.this, R.style.DialogTransparentBg);
+        d_pause.setContentView(R.layout.dialog_pause);
+        d_exit.setContentView(R.layout.dialog_quit);
+        d_restart.setContentView(R.layout.dialog_restart);
+        d_pause.setCancelable(false);
+        d_restart.setCancelable(false);
+        d_exit.setCancelable(false);
+        w_pause = d_pause.getWindow();
+        w_exit = d_exit.getWindow();
+        w_restart = d_restart.getWindow();
+        WindowManager.LayoutParams lp_pause = w_pause.getAttributes();
+        WindowManager.LayoutParams lp_exit = w_exit.getAttributes();
+        WindowManager.LayoutParams lp_restart = w_restart.getAttributes();
+        lp_pause.dimAmount = 0.8f;
+        lp_exit.dimAmount = 0.8f;
+        lp_restart.dimAmount = 0.8f;
+        w_pause.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+        w_exit.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+        w_restart.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+        w_pause.setGravity(Gravity.CENTER);
+        w_restart.setGravity(Gravity.CENTER);
+        w_exit.setGravity(Gravity.CENTER);
+        w_pause.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        w_exit.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        w_restart.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        w_pause.getAttributes().windowAnimations = R.style.DiaolgPAUSE;
+        w_exit.getAttributes().windowAnimations = R.style.DialogAnimation;
+        w_restart.getAttributes().windowAnimations = R.style.DialogAnimation;
+        resume = d_pause.findViewById(R.id.resume);
+        restart = d_pause.findViewById(R.id.restart);
+        exit = d_pause.findViewById(R.id.exit);
+        e_yes = d_exit.findViewById(R.id.yes);
+        e_no = d_exit.findViewById(R.id.no);
+        r_yes = d_restart.findViewById(R.id.yes);
+        r_no = d_restart.findViewById(R.id.no);
+
         cards.add(c1);
         cards.add(c2);
         cards.add(c3);
@@ -113,6 +162,42 @@ public class Questions extends AppCompatActivity {
         viewPager.setUserInputEnabled(false);
         viewPager.setOffscreenPageLimit(1);
         viewPager.getChildAt(0).setOverScrollMode(View.OVER_SCROLL_NEVER);
+
+        setDialogs();
+        pause.setOnClickListener(v -> {
+            d_pause.show();
+        });
     }
 
+    public void setDialogs() {
+        resume.setOnClickListener(v -> {
+            d_pause.cancel();
+        });
+        restart.setOnClickListener(v -> {
+            d_restart.show();
+        });
+        exit.setOnClickListener(v -> {
+            d_exit.show();
+        });
+        e_yes.setOnClickListener(v -> {
+            Intent intent = new Intent(Questions.this, NivelSelect.class);
+            intent.putExtra("categorie",categorie);
+            startActivity(intent);
+            finish();
+        });
+        e_no.setOnClickListener(v -> {
+            d_exit.cancel();
+        });
+        r_yes.setOnClickListener(v -> {
+            recreate();
+        });
+        r_no.setOnClickListener(v -> {
+            d_restart.cancel();
+        });
+    }
+
+    @Override
+    public void onBackPressed() {
+
+    }
 }

@@ -26,6 +26,7 @@ import io.grpc.internal.ClientTransport;
 import project.rew.iqgamequiz.NivelSelect;
 import project.rew.iqgamequiz.Questions;
 import project.rew.iqgamequiz.R;
+import project.rew.iqgamequiz.mainactivities.PlaySelectMode;
 
 public class SelectGeneralKnowlage extends AppCompatActivity {
 
@@ -77,4 +78,10 @@ public class SelectGeneralKnowlage extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent intent=new Intent(SelectGeneralKnowlage.this, PlaySelectMode.class);
+        startActivity(intent);
+    }
 }

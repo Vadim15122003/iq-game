@@ -6,6 +6,7 @@ import androidx.viewpager2.widget.CompositePageTransformer;
 import androidx.viewpager2.widget.MarginPageTransformer;
 import androidx.viewpager2.widget.ViewPager2;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
@@ -20,12 +21,14 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import project.rew.iqgamequiz.playactivities.SelectGeneralKnowlage;
 import project.rew.iqgamequiz.utils.Constants;
 import project.rew.iqgamequiz.utils.NivelSelectSlideAdapter;
 
 public class NivelSelect extends AppCompatActivity {
 
     DatabaseReference ref;
+    String categorie;
     ViewPager2 viewPager;
     NivelSelectSlideAdapter adapter;
     TextView coins,glory;
@@ -37,7 +40,7 @@ public class NivelSelect extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         viewPager = findViewById(R.id.viewpager);
-        String categorie=getIntent().getStringExtra("categorie");
+        categorie=getIntent().getStringExtra("categorie");
         ref = FirebaseDatabase.getInstance().getReference().child("Categories").child(categorie).child("nivels");
         List<String> nivels = new ArrayList<>();
         coins = findViewById(R.id.iq_coins);
@@ -79,5 +82,12 @@ public class NivelSelect extends AppCompatActivity {
             }
         });
         viewPager.setPageTransformer(transformer);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent intent=new Intent(NivelSelect.this, SelectGeneralKnowlage.class);
+        startActivity(intent);
     }
 }

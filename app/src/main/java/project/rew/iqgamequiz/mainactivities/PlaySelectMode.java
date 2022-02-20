@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.google.android.material.imageview.ShapeableImageView;
 
 import project.rew.iqgamequiz.MainActivity;
+import project.rew.iqgamequiz.NivelSelect;
 import project.rew.iqgamequiz.R;
 import project.rew.iqgamequiz.playactivities.SelectGeneralKnowlage;
 import project.rew.iqgamequiz.utils.Constants;
@@ -42,6 +43,13 @@ public class PlaySelectMode extends AppCompatActivity {
 
     private void openActivity(Class<?> cls){
         Intent intent = new Intent(PlaySelectMode.this,cls);
+        startActivity(intent);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent intent=new Intent(PlaySelectMode.this,MainActivity.class);
         startActivity(intent);
     }
 }
