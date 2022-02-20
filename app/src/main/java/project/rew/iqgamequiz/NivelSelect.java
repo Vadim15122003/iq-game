@@ -8,6 +8,8 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import android.os.Bundle;
 import android.view.View;
+import android.view.WindowManager;
+import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -18,6 +20,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import project.rew.iqgamequiz.utils.Constants;
 import project.rew.iqgamequiz.utils.NivelSelectSlideAdapter;
 
 public class NivelSelect extends AppCompatActivity {
@@ -25,16 +28,23 @@ public class NivelSelect extends AppCompatActivity {
     DatabaseReference ref;
     ViewPager2 viewPager;
     NivelSelectSlideAdapter adapter;
+    TextView coins,glory;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nivel_select);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         viewPager = findViewById(R.id.viewpager);
         String categorie=getIntent().getStringExtra("categorie");
         ref = FirebaseDatabase.getInstance().getReference().child("Categories").child(categorie).child("nivels");
         List<String> nivels = new ArrayList<>();
+        coins = findViewById(R.id.iq_coins);
+        glory = findViewById(R.id.glory);
+
+        glory.setText(Constants.glory);
+        coins.setText(Constants.coins);
 
         ref.addValueEventListener(new ValueEventListener() {
             @Override

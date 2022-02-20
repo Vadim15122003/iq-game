@@ -1,55 +1,87 @@
 package project.rew.iqgamequiz.utils;
 
+import android.app.Activity;
+import android.app.Dialog;
+import android.content.Context;
+import android.content.Intent;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 
+import project.rew.iqgamequiz.MainActivity;
+import project.rew.iqgamequiz.NivelSelect;
 import project.rew.iqgamequiz.Question;
-import project.rew.iqgamequiz.Questions;
 import project.rew.iqgamequiz.R;
-
-import static project.rew.iqgamequiz.LoginActivity.mAuth;
 
 public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHolder> {
 
     List<Question> questions = new ArrayList<>();
     ViewPager2 viewPager;
+    List<CardView> cards;
+    Dialog finish;
+    Context context;
+    ImageView back, replay;
+    String categorie;
+    TextView coins, glory, dialog_coins, dialog_glory;
+    boolean clicked = false;
+    int corecte, gresite;
 
-    public QuestionAdapter(List<Question> questions, ViewPager2 viewPager) {
+    public QuestionAdapter(List<Question> questions, ViewPager2 viewPager,
+                           List<CardView> cards, Context context, String categorie,
+                           TextView coins, TextView glory) {
         this.questions = questions;
         this.viewPager = viewPager;
+        this.cards = cards;
+        this.context = context;
+        this.categorie = categorie;
+        this.coins = coins;
+        this.glory = glory;
+        corecte = 0;
+        gresite = 0;
     }
 
     @NonNull
     @Override
     public QuestionAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.maket_question, parent, false);
+        finish = new Dialog(context, R.style.Dialog);
+        finish.setContentView(R.layout.dialog_finish_question);
+        finish.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        finish.setCancelable(false);
+        WindowManager.LayoutParams lp = finish.getWindow().getAttributes();
+        lp.dimAmount = 0.8f;
+        finish.getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+        finish.getWindow().getAttributes().windowAnimations = R.style.animation;
 
+        back = finish.findViewById(R.id.back);
+        replay = finish.findViewById(R.id.replay);
+        dialog_coins=finish.findViewById(R.id.coins);
+        dialog_glory=finish.findViewById(R.id.glory);
+        back.setOnClickListener(v -> {
+            goToBackActivity();
+        });
+        replay.setOnClickListener(v -> {
+            ((Activity) context).recreate();
+            viewPager.setCurrentItem(0);
+        });
         return new ViewHolder(view);
     }
 
@@ -63,67 +95,67 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
         holder.t2.setText(cureentQuestion.getAnsewrs().get(1).getAnswer());
         holder.t3.setText(cureentQuestion.getAnsewrs().get(2).getAnswer());
         holder.t4.setText(cureentQuestion.getAnsewrs().get(3).getAnswer());
+
         holder.i1.setOnClickListener(v -> {
-            if (cureentQuestion.getAnsewrs().get(0).isCorect()) {
-                holder.v1.setVisibility(View.VISIBLE);
-            } else holder.r1.setVisibility(View.VISIBLE);
-            Handler handler = new Handler();
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    holder.v1.setVisibility(View.GONE);
-                    holder.r1.setVisibility(View.GONE);
-                    viewPager.setCurrentItem(position + 1);
-                }
-            }, 700);
+            AnswerSelect(cureentQuestion.getAnsewrs().get(0).isCorect(), holder.v1, holder.r1, viewPager, position);
         });
         holder.i2.setOnClickListener(v -> {
-            if (cureentQuestion.getAnsewrs().get(1).isCorect()) {
-                holder.v2.setVisibility(View.VISIBLE);
-            } else holder.r2.setVisibility(View.VISIBLE);
-            Handler handler = new Handler();
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    holder.v2.setVisibility(View.GONE);
-                    holder.r2.setVisibility(View.GONE);
-                    viewPager.setCurrentItem(position + 1);
-                }
-            }, 700);
+            AnswerSelect(cureentQuestion.getAnsewrs().get(1).isCorect(), holder.v2, holder.r2, viewPager, position);
         });
         holder.i3.setOnClickListener(v -> {
-            if (cureentQuestion.getAnsewrs().get(2).isCorect()) {
-                holder.v3.setVisibility(View.VISIBLE);
-            } else holder.r3.setVisibility(View.VISIBLE);
-            Handler handler = new Handler();
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    holder.v3.setVisibility(View.GONE);
-                    holder.r3.setVisibility(View.GONE);
-                    viewPager.setCurrentItem(position + 1);
-                }
-            }, 700);
+            AnswerSelect(cureentQuestion.getAnsewrs().get(2).isCorect(), holder.v3, holder.r3, viewPager, position);
         });
         holder.i4.setOnClickListener(v -> {
-            if (cureentQuestion.getAnsewrs().get(3).isCorect()) {
-                holder.v4.setVisibility(View.VISIBLE);
-            } else holder.r4.setVisibility(View.VISIBLE);
-            Handler handler = new Handler();
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    holder.v4.setVisibility(View.GONE);
-                    holder.r4.setVisibility(View.GONE);
-                    viewPager.setCurrentItem(position + 1);
-                }
-            }, 700);
+            AnswerSelect(cureentQuestion.getAnsewrs().get(3).isCorect(), holder.v4, holder.r4, viewPager, position);
         });
     }
 
     @Override
     public int getItemCount() {
         return Math.min(questions.size(), 10);
+    }
+
+    public void AnswerSelect(boolean corect, LinearLayout v, LinearLayout r, ViewPager2 viewPager, int position) {
+        if (!clicked) {
+            clicked = true;
+            if (corect) {
+                corecte++;
+                v.setVisibility(View.VISIBLE);
+                cards.get(position).setCardBackgroundColor(Color.parseColor("#0EAF08"));
+            } else {
+                gresite++;
+                r.setVisibility(View.VISIBLE);
+                cards.get(position).setCardBackgroundColor(Color.parseColor("#ED2828"));
+            }
+
+            if (gresite == 3) {
+                finish.show();
+            } else {
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        v.setVisibility(View.GONE);
+                        r.setVisibility(View.GONE);
+                        viewPager.setCurrentItem(position + 1);
+                        clicked = false;
+                        if (position == 9) {
+                            finish.show();
+                            Constants.addCoins(Constants.getInt(Constants.coins) + corecte * 2, coins);
+                            Constants.addGlory(Constants.getInt(Constants.glory) + corecte, glory);
+                            dialog_coins.setText(String.valueOf(corecte * 2));
+                            dialog_glory.setText(String.valueOf(corecte));
+                        }
+                    }
+                }, 700);
+            }
+        }
+    }
+
+    public void goToBackActivity() {
+        Intent intent = new Intent(context, NivelSelect.class);
+        intent.putExtra("categorie", categorie);
+        context.startActivity(intent);
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

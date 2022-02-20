@@ -11,9 +11,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.IQGame">
-        <activity android:name=".Questions"></activity>
-        <activity android:name=".NivelSelect" />
-        <activity android:name=".Questions" />
+        <activity android:name=".NivelSelect"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".Questions"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".playactivities.SelectGeneralKnowlage"
             android:screenOrientation="portrait" />

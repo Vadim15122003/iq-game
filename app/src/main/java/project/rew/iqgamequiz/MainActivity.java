@@ -56,33 +56,6 @@ public class MainActivity extends AppCompatActivity {
         friends.setOnClickListener(view -> openActivity(Friends.class));
         top_glory.setOnClickListener(view -> openActivity(TopGlory.class));
         settings.setOnClickListener(view -> openActivity(Settings.class));
-        /*btn1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Map<String, Object> newIqCoins = new HashMap<>();
-                newIqCoins.put("IqCoins", 592);
-                fstore.collection("users").whereEqualTo("glory", 0).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful() && !task.getResult().isEmpty()) {
-                            DocumentSnapshot documentSnapshot=task.getResult().getDocuments().get(0);
-                            String documentId=documentSnapshot.getId();
-                            fstore.collection("users").document(documentId).update(newIqCoins).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void unused) {
-
-                                }
-                            }).addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-
-                                }
-                            });
-                        }
-                    }
-                });
-            }
-        });*/
     }
 
     private void sendUserToLoginActivity() {
@@ -94,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void getData(){
         if (mAuth.getCurrentUser() != null) {
+            Constants.email=mAuth.getCurrentUser().getEmail();
             DocumentReference documentReference = fstore.collection("users").document(Objects.requireNonNull(mAuth.getCurrentUser().getEmail()));
             documentReference.addSnapshotListener((value, error) -> {
                 if (value!=null) {
