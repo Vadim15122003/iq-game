@@ -40,11 +40,11 @@ public class Questions extends AppCompatActivity {
     String categorie;
     ViewPager2 viewPager;
     QuestionAdapter adapter;
-    TextView textView, coins, glory;
+    TextView textView, coins, glory, tdouble_change, tswichq, tcinzeci, tcorect;
     List<Question> questions = new ArrayList<>();
-    CardView c1, c2, c3, c4, c5, c6, c7, c8, c9, c10;
+    CardView c1, c2, c3, c4, c5, c6, c7, c8, c9, c10, double_change, swichq, cinzeci, corect;
     List<CardView> cards = new ArrayList<>();
-    ImageView pause, resume, restart, exit, e_yes, e_no, r_yes, r_no;
+    ImageView pause, resume, restart, exit, e_yes, e_no, r_yes, r_no, img_double_change, img_swichq, img_cinzeci, img_corect;
     Dialog d_pause, d_exit, d_restart;
     Window w_pause, w_exit, w_restart;
 
@@ -69,6 +69,18 @@ public class Questions extends AppCompatActivity {
         c8 = findViewById(R.id.c8);
         c9 = findViewById(R.id.c9);
         c10 = findViewById(R.id.c10);
+        double_change = findViewById(R.id.double_chance);
+        swichq = findViewById(R.id.swichq);
+        cinzeci = findViewById(R.id.cinzeci);
+        corect = findViewById(R.id.corect);
+        tdouble_change = findViewById(R.id.tdoublechange);
+        tswichq = findViewById(R.id.tswichq);
+        tcinzeci = findViewById(R.id.tcinzeci);
+        tcorect = findViewById(R.id.tcorect);
+        img_double_change = findViewById(R.id.img_double_change);
+        img_swichq = findViewById(R.id.img_swichq);
+        img_cinzeci = findViewById(R.id.img_cinzeci);
+        img_corect = findViewById(R.id.img_corect);
         pause = findViewById(R.id.pause);
         d_pause = new Dialog(Questions.this, R.style.DialogTransparentBg);
         d_exit = new Dialog(Questions.this, R.style.DialogTransparentBg);
@@ -149,7 +161,9 @@ public class Questions extends AppCompatActivity {
                     Collections.shuffle(questions);
                 }
                 adapter = new QuestionAdapter(questions, viewPager, cards, Questions.this,
-                        categorie, coins, glory);
+                        categorie, coins, glory, double_change, swichq, cinzeci, corect,
+                        img_double_change, img_swichq, img_cinzeci, img_corect,
+                        tdouble_change, tswichq, tcinzeci, tcorect);
                 viewPager.setAdapter(adapter);
             }
 
@@ -161,6 +175,8 @@ public class Questions extends AppCompatActivity {
 
         viewPager.setUserInputEnabled(false);
         viewPager.setOffscreenPageLimit(1);
+        viewPager.setClipToPadding(false);
+        viewPager.setClipChildren(false);
         viewPager.getChildAt(0).setOverScrollMode(View.OVER_SCROLL_NEVER);
 
         setDialogs();
@@ -181,7 +197,7 @@ public class Questions extends AppCompatActivity {
         });
         e_yes.setOnClickListener(v -> {
             Intent intent = new Intent(Questions.this, NivelSelect.class);
-            intent.putExtra("categorie",categorie);
+            intent.putExtra("categorie", categorie);
             startActivity(intent);
             finish();
         });
