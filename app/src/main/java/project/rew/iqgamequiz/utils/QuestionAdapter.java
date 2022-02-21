@@ -132,10 +132,6 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        img_corect.setImageResource(R.drawable.corect);
-                        img_double_change.setImageResource(R.drawable.doublechange);
-                        img_cinzeci.setImageResource(R.drawable.cinzeci);
-                        img_swichq.setImageResource(R.drawable.reload);
                         bdouble_change = false;
                         takeVisibility(holder.v1, holder.v2, holder.v3, holder.v4, holder.r1, holder.r2, holder.r3, holder.r4);
                         TransitionManager.beginDelayedTransition(holder.viewGroup);
