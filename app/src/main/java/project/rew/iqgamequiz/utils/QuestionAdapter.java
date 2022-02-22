@@ -25,6 +25,7 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import project.rew.iqgamequiz.MainActivity;
@@ -42,9 +43,10 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
     ImageView back, replay, img_double_change, img_swichq, img_cinzeci, img_corect;
     String categorie;
     TextView coins, glory, dialog_coins, dialog_glory, tdouble_change, tswichq, tcinzeci, tcorect;
-    boolean clicked = false, bdouble_change;
+    boolean clicked = false, bdouble_change, bcorect = false, bcinzeci = false;
     int corecte, gresite;
     CardView double_change, swichq, cinzeci, corect;
+    List<Integer> answersnr = new ArrayList<>();
 
     public QuestionAdapter(List<Question> questions, ViewPager2 viewPager,
                            List<CardView> cards, Context context, String categorie,
@@ -74,6 +76,10 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
         this.tcorect = tcorect;
         corecte = 0;
         gresite = 0;
+        answersnr.add(1);
+        answersnr.add(2);
+        answersnr.add(3);
+        answersnr.add(4);
     }
 
     @NonNull
@@ -106,6 +112,7 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
     @Override
     public void onBindViewHolder(@NonNull QuestionAdapter.ViewHolder holder, int position) {
         Question cureentQuestion = questions.get(position);
+        setVisibilityToAnswers(holder.t1, holder.t2, holder.t3, holder.t4, holder.i1, holder.i2, holder.i3, holder.i4);
         takeVisibility(holder.v1, holder.v2, holder.v3, holder.v4, holder.r1, holder.r2, holder.r3, holder.r4);
         if (cureentQuestion.getImage() != null)
             Picasso.get().load(cureentQuestion.getImage()).into(holder.image);
@@ -149,6 +156,7 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
                                 Question cureentQuestion1 = questions.get(viewPager.getCurrentItem());
                                 if (cureentQuestion1.getImage() != null)
                                     Picasso.get().load(cureentQuestion1.getImage()).into(holder.image);
+                                setVisibilityToAnswers(holder.t1, holder.t2, holder.t3, holder.t4, holder.i1, holder.i2, holder.i3, holder.i4);
                                 holder.question.setText(cureentQuestion1.getQuestion());
                                 holder.t1.setText(cureentQuestion1.getAnsewrs().get(0).getAnswer());
                                 holder.t2.setText(cureentQuestion1.getAnsewrs().get(1).getAnswer());
@@ -160,7 +168,7 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
                                 holder.t3.setVisibility(View.VISIBLE);
                                 holder.t4.setVisibility(View.VISIBLE);
                                 holder.image.setVisibility(View.VISIBLE);
-                                clicked=false;
+                                clicked = false;
                             }
                         }, 500);
                         Handler handler2 = new Handler();
@@ -169,23 +177,62 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
                             public void run() {
                                 notifyDataSetChanged();
                             }
-                        }, 600);
+                        }, 700);
                     }
                 }, 400);
             }
         });
         holder.corect.setOnClickListener(v -> {
-            if (img_corect.getDrawable().getConstantState() != context.getResources().getDrawable(R.drawable.clicked_corect).getConstantState()) {
+            if (img_corect.getDrawable().getConstantState() != context.getResources().getDrawable(R.drawable.clicked_corect).getConstantState() && !bcinzeci) {
                 img_corect.setImageResource(R.drawable.clicked_corect);
+                bcorect = true;
                 Constants.addCoins(Constants.getInt(Constants.coins) - Constants.getInt(String.valueOf(tcorect.getText())), coins);
-
+                TransitionManager.beginDelayedTransition(holder.viewGroup);
+                if (!cureentQuestion.getAnsewrs().get(0).isCorect()) {
+                    holder.t1.setVisibility(View.INVISIBLE);
+                    holder.i1.setVisibility(View.INVISIBLE);
+                }
+                if (!cureentQuestion.getAnsewrs().get(1).isCorect()) {
+                    holder.t2.setVisibility(View.INVISIBLE);
+                    holder.i2.setVisibility(View.INVISIBLE);
+                }
+                if (!cureentQuestion.getAnsewrs().get(2).isCorect()) {
+                    holder.t3.setVisibility(View.INVISIBLE);
+                    holder.i3.setVisibility(View.INVISIBLE);
+                }
+                if (!cureentQuestion.getAnsewrs().get(3).isCorect()) {
+                    holder.t4.setVisibility(View.INVISIBLE);
+                    holder.i4.setVisibility(View.INVISIBLE);
+                }
             }
         });
         holder.cinzeci.setOnClickListener(v -> {
-            if (img_cinzeci.getDrawable().getConstantState() != context.getResources().getDrawable(R.drawable.clicked_cinzeci).getConstantState()) {
+            if (img_cinzeci.getDrawable().getConstantState() != context.getResources().getDrawable(R.drawable.clicked_cinzeci).getConstantState() && !bcorect) {
                 img_cinzeci.setImageResource(R.drawable.clicked_cinzeci);
                 Constants.addCoins(Constants.getInt(Constants.coins) - Constants.getInt(String.valueOf(tcinzeci.getText())), coins);
-
+                bcinzeci = true;
+                Collections.shuffle(answersnr);
+                int sterse = 0;
+                TransitionManager.beginDelayedTransition(holder.viewGroup);
+                for (int j : answersnr) {
+                    if (sterse == 2) break;
+                    if (!cureentQuestion.getAnsewrs().get(j - 1).isCorect()) {
+                        sterse++;
+                        if (j == 1) {
+                            holder.t1.setVisibility(View.INVISIBLE);
+                            holder.i1.setVisibility(View.INVISIBLE);
+                        } else if (j == 2) {
+                            holder.t2.setVisibility(View.INVISIBLE);
+                            holder.i2.setVisibility(View.INVISIBLE);
+                        } else if (j == 3) {
+                            holder.t3.setVisibility(View.INVISIBLE);
+                            holder.i3.setVisibility(View.INVISIBLE);
+                        } else if (j == 4) {
+                            holder.t4.setVisibility(View.INVISIBLE);
+                            holder.i4.setVisibility(View.INVISIBLE);
+                        }
+                    }
+                }
             }
         });
         holder.i1.setOnClickListener(v -> {
@@ -208,7 +255,7 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
         return Math.min(questions.size(), 10);
     }
 
-    public void AnswerSelect(boolean corect, LinearLayout v, LinearLayout r, ViewPager2 viewPager, int position) {
+    public void AnswerSelect(boolean corect, ImageView v, ImageView r, ViewPager2 viewPager, int position) {
         if (!clicked) {
             boolean gotoNext = true;
             if (!bdouble_change)
@@ -246,6 +293,11 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
                         img_swichq.setImageResource(R.drawable.reload);
                         bdouble_change = false;
                         viewPager.setCurrentItem(position + 1);
+                        if (bcorect || bcinzeci) {
+                            notifyDataSetChanged();
+                            bcorect = false;
+                            bcinzeci = false;
+                        }
                         clicked = false;
                         if (position == 9) {
                             finish.show();
@@ -261,8 +313,8 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
         }
     }
 
-    public void takeVisibility(LinearLayout v1, LinearLayout v2, LinearLayout v3, LinearLayout v4,
-                               LinearLayout r1, LinearLayout r2, LinearLayout r3, LinearLayout r4) {
+    public void takeVisibility(ImageView v1, ImageView v2, ImageView v3, ImageView v4,
+                               ImageView r1, ImageView r2, ImageView r3, ImageView r4) {
         v1.setVisibility(View.GONE);
         v2.setVisibility(View.GONE);
         v3.setVisibility(View.GONE);
@@ -271,6 +323,18 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
         r2.setVisibility(View.GONE);
         r3.setVisibility(View.GONE);
         r4.setVisibility(View.GONE);
+    }
+
+    public void setVisibilityToAnswers(TextView t1, TextView t2, TextView t3, TextView t4,
+                                       ImageView i1, ImageView i2, ImageView i3, ImageView i4) {
+        i1.setVisibility(View.VISIBLE);
+        i2.setVisibility(View.VISIBLE);
+        i3.setVisibility(View.VISIBLE);
+        i4.setVisibility(View.VISIBLE);
+        t1.setVisibility(View.VISIBLE);
+        t2.setVisibility(View.VISIBLE);
+        t3.setVisibility(View.VISIBLE);
+        t4.setVisibility(View.VISIBLE);
     }
 
     public void goToBackActivity() {
@@ -282,7 +346,7 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
     public static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView image, i1, i2, i3, i4;
         TextView question, t1, t2, t3, t4;
-        LinearLayout r1, r2, r3, r4, v1, v2, v3, v4;
+        ImageView r1, r2, r3, r4, v1, v2, v3, v4;
         ViewGroup viewGroup;
         CardView double_change, swichq, cinzeci, corect;
 
