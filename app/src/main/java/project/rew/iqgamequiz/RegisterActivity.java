@@ -1,5 +1,7 @@
 package project.rew.iqgamequiz;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ProgressDialog;
@@ -13,11 +15,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.ListenerRegistration;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -63,13 +71,14 @@ public class RegisterActivity extends AppCompatActivity {
                 String password = inputPasword.getText().toString();
                 String confirmPassword = inputConfirmPassword.getText().toString();
                 String userName = inputUsername.getText().toString();
+
                 if (email.matches(emailPattern)) {
                     inputEmail.setError("Enter a valid email");
                 } else if (password.isEmpty() || password.length() < 6) {
                     inputPasword.setError("Enter a password wich minim 6 charcters");
-                } else if (userName.length()<4) {
+                } else if (userName.length() < 4) {
                     inputUsername.setError("Enter a userName wich minim 4 charcaters");
-                } else if (userName.length()>10) {
+                } else if (userName.length() > 10) {
                     inputUsername.setError("Enter a userName wich maxim 10 charcaters");
                 } else if (userName.contains(" ")) {
                     inputUsername.setError("Enter a userName wichout space");
@@ -81,33 +90,56 @@ public class RegisterActivity extends AppCompatActivity {
                     progressDialog.setCanceledOnTouchOutside(false);
                     progressDialog.show();
 
-                    mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    fstore.collection("users").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                         @Override
-                        public void onComplete(Task<AuthResult> task) {
-                            if (task.isSuccessful()) {
-                                progressDialog.dismiss();
-                                DocumentReference documentReference = fstore.collection("users").document(email);
-                                Map<String, Object> user = new HashMap<>();
-                                user.put("username",userName);
-                                user.put("IqCoins", 0);
-                                user.put("glory", 0);
-                                Map<String,Object> titles=new HashMap<>();
-                                titles.put("beginer","Începător");
-                                user.put("titles",titles);
-                                documentReference.set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                            boolean exist=false;
+                            if (!queryDocumentSnapshots.isEmpty()) {
+                                for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                                    if (documentSnapshot.exists()) {
+                                        String username = documentSnapshot.get("username").toString();
+                                        if (username.equals(userName)) {
+                                            exist=true;
+                                            progressDialog.dismiss();
+                                            inputUsername.setError("A person wich this userName already exist");
+                                        }
+                                    }
+                                }
+                                if (!exist)
+                                mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                                     @Override
-                                    public void onSuccess(Void unused) {
+                                    public void onComplete(Task<AuthResult> task) {
+                                        if (task.isSuccessful()) {
+                                            progressDialog.dismiss();
+                                            DocumentReference documentReference = fstore.collection("users").document(email);
+                                            Map<String, Object> user = new HashMap<>();
+                                            user.put("username", userName);
+                                            user.put("IqCoins", 0);
+                                            user.put("glory", 0);
+                                            documentReference.set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void unused) {
 
+                                                }
+                                            });
+                                            sendUserToLoginActivity();
+                                            Toast.makeText(RegisterActivity.this, "Registratino succefuly", Toast.LENGTH_SHORT).show();
+                                        } else {
+                                            progressDialog.dismiss();
+                                            Toast.makeText(RegisterActivity.this, "" + task.getException(), Toast.LENGTH_SHORT).show();
+                                        }
                                     }
                                 });
-                                sendUserToLoginActivity();
-                                Toast.makeText(RegisterActivity.this, "Registratino succefuly", Toast.LENGTH_SHORT).show();
-                            } else {
-                                progressDialog.dismiss();
-                                Toast.makeText(RegisterActivity.this, "" + task.getException(), Toast.LENGTH_SHORT).show();
                             }
                         }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            progressDialog.dismiss();
+                            Toast.makeText(RegisterActivity.this, "" + e.getMessage(), Toast.LENGTH_LONG).show();
+                        }
                     });
+
                 }
             }
         });

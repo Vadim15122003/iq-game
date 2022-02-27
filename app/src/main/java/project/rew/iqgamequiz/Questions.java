@@ -3,8 +3,6 @@ package project.rew.iqgamequiz;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
-import androidx.viewpager2.widget.CompositePageTransformer;
-import androidx.viewpager2.widget.MarginPageTransformer;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.app.Dialog;
@@ -30,14 +28,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import project.rew.iqgamequiz.utils.Constants;
-import project.rew.iqgamequiz.utils.NivelSelectSlideAdapter;
+import project.rew.iqgamequiz.utils.FirebaseUtils;
 import project.rew.iqgamequiz.utils.QuestionAdapter;
 
 
 public class Questions extends AppCompatActivity {
     DatabaseReference ref;
-    String categorie;
+    String categorie, categorieId;
     ViewPager2 viewPager;
     QuestionAdapter adapter;
     TextView textView, coins, glory, tdouble_change, tswichq, tcinzeci, tcorect;
@@ -55,6 +52,7 @@ public class Questions extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         viewPager = findViewById(R.id.viewpager);
         categorie = getIntent().getStringExtra("categorie");
+        categorieId = getIntent().getStringExtra("categorieId");
         int nivel = getIntent().getIntExtra("nivel", 0);
         textView = findViewById(R.id.text);
         coins = findViewById(R.id.iq_coins);
@@ -131,10 +129,10 @@ public class Questions extends AppCompatActivity {
         cards.add(c9);
         cards.add(c10);
 
-        glory.setText(Constants.glory);
-        coins.setText(Constants.coins);
+        glory.setText(FirebaseUtils.glory);
+        coins.setText(FirebaseUtils.coins);
 
-        ref = FirebaseDatabase.getInstance().getReference().child("Categories").child(categorie).child("nivels").child(String.valueOf(nivel)).child("questions");
+        ref = FirebaseDatabase.getInstance().getReference().child("RO").child(categorie).child("nivels").child(String.valueOf(nivel)).child("questions");
 
         ref.addValueEventListener(new ValueEventListener() {
             @Override
@@ -161,7 +159,7 @@ public class Questions extends AppCompatActivity {
                     Collections.shuffle(questions);
                 }
                 adapter = new QuestionAdapter(questions, viewPager, cards, Questions.this,
-                        categorie, coins, glory, double_change, swichq, cinzeci, corect,
+                        categorie, categorieId, String.valueOf(nivel), coins, glory, double_change, swichq, cinzeci, corect,
                         img_double_change, img_swichq, img_cinzeci, img_corect,
                         tdouble_change, tswichq, tcinzeci, tcorect);
                 viewPager.setAdapter(adapter);

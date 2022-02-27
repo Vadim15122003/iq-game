@@ -5,7 +5,6 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
-import android.os.Build;
 import android.os.Handler;
 import android.transition.TransitionManager;
 import android.view.LayoutInflater;
@@ -13,7 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -28,7 +26,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import project.rew.iqgamequiz.MainActivity;
 import project.rew.iqgamequiz.NivelSelect;
 import project.rew.iqgamequiz.Question;
 import project.rew.iqgamequiz.R;
@@ -41,7 +38,7 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
     Dialog finish;
     Context context;
     ImageView back, replay, img_double_change, img_swichq, img_cinzeci, img_corect;
-    String categorie;
+    String categorie, categorieId, nivelId;
     TextView coins, glory, dialog_coins, dialog_glory, tdouble_change, tswichq, tcinzeci, tcorect;
     boolean clicked = false, bdouble_change, bcorect = false, bcinzeci = false;
     int corecte, gresite;
@@ -50,6 +47,7 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
 
     public QuestionAdapter(List<Question> questions, ViewPager2 viewPager,
                            List<CardView> cards, Context context, String categorie,
+                           String categorieId, String nivelId,
                            TextView coins, TextView glory, CardView double_change,
                            CardView swichq, CardView cinzeci, CardView corect,
                            ImageView img_double_change, ImageView img_swichq,
@@ -60,6 +58,8 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
         this.cards = cards;
         this.context = context;
         this.categorie = categorie;
+        this.categorieId = categorieId;
+        this.nivelId = nivelId;
         this.coins = coins;
         this.glory = glory;
         this.double_change = double_change;
@@ -124,7 +124,7 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
         holder.double_change.setOnClickListener(v -> {
             if (img_double_change.getDrawable().getConstantState() != context.getResources().getDrawable(R.drawable.clicked_double_change).getConstantState()) {
                 img_double_change.setImageResource(R.drawable.clicked_double_change);
-                Constants.addCoins(Constants.getInt(Constants.coins) - Constants.getInt(String.valueOf(tdouble_change.getText())), coins);
+                FirebaseUtils.addCoins(FirebaseUtils.getInt(FirebaseUtils.coins) - FirebaseUtils.getInt(String.valueOf(tdouble_change.getText())), coins);
                 bdouble_change = true;
             }
         });
@@ -132,7 +132,7 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
             if (img_swichq.getDrawable().getConstantState() != context.getResources().getDrawable(R.drawable.clicked_swichq).getConstantState()) {
                 img_swichq.setImageResource(R.drawable.clicked_swichq);
                 clicked = true;
-                Constants.addCoins(Constants.getInt(Constants.coins) - Constants.getInt(String.valueOf(tswichq.getText())), coins);
+                FirebaseUtils.addCoins(FirebaseUtils.getInt(FirebaseUtils.coins) - FirebaseUtils.getInt(String.valueOf(tswichq.getText())), coins);
                 questions.add(questions.get(viewPager.getCurrentItem()));
                 questions.remove(viewPager.getCurrentItem());
                 Handler handler = new Handler();
@@ -186,7 +186,7 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
             if (img_corect.getDrawable().getConstantState() != context.getResources().getDrawable(R.drawable.clicked_corect).getConstantState() && !bcinzeci) {
                 img_corect.setImageResource(R.drawable.clicked_corect);
                 bcorect = true;
-                Constants.addCoins(Constants.getInt(Constants.coins) - Constants.getInt(String.valueOf(tcorect.getText())), coins);
+                FirebaseUtils.addCoins(FirebaseUtils.getInt(FirebaseUtils.coins) - FirebaseUtils.getInt(String.valueOf(tcorect.getText())), coins);
                 TransitionManager.beginDelayedTransition(holder.viewGroup);
                 if (!cureentQuestion.getAnsewrs().get(0).isCorect()) {
                     holder.t1.setVisibility(View.INVISIBLE);
@@ -209,7 +209,7 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
         holder.cinzeci.setOnClickListener(v -> {
             if (img_cinzeci.getDrawable().getConstantState() != context.getResources().getDrawable(R.drawable.clicked_cinzeci).getConstantState() && !bcorect) {
                 img_cinzeci.setImageResource(R.drawable.clicked_cinzeci);
-                Constants.addCoins(Constants.getInt(Constants.coins) - Constants.getInt(String.valueOf(tcinzeci.getText())), coins);
+                FirebaseUtils.addCoins(FirebaseUtils.getInt(FirebaseUtils.coins) - FirebaseUtils.getInt(String.valueOf(tcinzeci.getText())), coins);
                 bcinzeci = true;
                 Collections.shuffle(answersnr);
                 int sterse = 0;
@@ -301,8 +301,9 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
                         clicked = false;
                         if (position == 9) {
                             finish.show();
-                            Constants.addCoins(Constants.getInt(Constants.coins) + corecte * 2, coins);
-                            Constants.addGlory(Constants.getInt(Constants.glory) + corecte, glory);
+                            FirebaseUtils.addCoins(FirebaseUtils.getInt(FirebaseUtils.coins) + corecte * 2, coins);
+                            FirebaseUtils.addGlory(FirebaseUtils.getInt(FirebaseUtils.glory) + corecte, glory);
+                            FirebaseUtils.setCorectAnswers(categorieId, nivelId, corecte);
                             dialog_coins.setText(String.valueOf(corecte * 2));
                             dialog_glory.setText(String.valueOf(corecte));
                         }

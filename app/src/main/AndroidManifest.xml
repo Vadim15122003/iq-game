@@ -16,7 +16,7 @@
         <activity android:name=".Questions"
             android:screenOrientation="portrait"/>
         <activity
-            android:name=".playactivities.SelectGeneralKnowlage"
+            android:name=".mainactivities.SelectGeneralKnowlage"
             android:screenOrientation="portrait" />
         <activity
             android:name=".mainactivities.Settings"

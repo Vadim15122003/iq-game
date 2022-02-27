@@ -1,7 +1,8 @@
-package project.rew.iqgamequiz.playactivities;
+package project.rew.iqgamequiz.mainactivities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -18,15 +19,12 @@ import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
 
-import io.grpc.internal.ClientTransport;
+import project.rew.iqgamequiz.MainActivity;
 import project.rew.iqgamequiz.NivelSelect;
-import project.rew.iqgamequiz.Questions;
 import project.rew.iqgamequiz.R;
-import project.rew.iqgamequiz.mainactivities.PlaySelectMode;
+import project.rew.iqgamequiz.playactivities.KnewCategorie;
 
 public class SelectGeneralKnowlage extends AppCompatActivity {
 
@@ -42,7 +40,7 @@ public class SelectGeneralKnowlage extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         recyclerView = findViewById(R.id.recyclerview);
-        databaseReference = FirebaseDatabase.getInstance().getReference().child("Categories");
+        databaseReference = FirebaseDatabase.getInstance().getReference().child("RO");
 
         recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
         recyclerView.setHasFixedSize(true);
@@ -81,7 +79,21 @@ public class SelectGeneralKnowlage extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        Intent intent=new Intent(SelectGeneralKnowlage.this, PlaySelectMode.class);
+        Intent intent=new Intent(SelectGeneralKnowlage.this, MainActivity.class);
         startActivity(intent);
+    }
+}
+
+class MyViewHolder extends RecyclerView.ViewHolder {
+
+    ImageView imageView;
+    TextView title;
+    CardView cardView;
+
+    public MyViewHolder(@NonNull View itemView) {
+        super(itemView);
+        imageView = itemView.findViewById(R.id.image);
+        title = itemView.findViewById(R.id.title);
+        cardView = itemView.findViewById(R.id.view);
     }
 }

@@ -14,11 +14,11 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.Objects;
 
 import project.rew.iqgamequiz.mainactivities.Friends;
-import project.rew.iqgamequiz.mainactivities.PlaySelectMode;
 import project.rew.iqgamequiz.mainactivities.Profile;
 import project.rew.iqgamequiz.mainactivities.Settings;
 import project.rew.iqgamequiz.mainactivities.TopGlory;
-import project.rew.iqgamequiz.utils.Constants;
+import project.rew.iqgamequiz.mainactivities.SelectGeneralKnowlage;
+import project.rew.iqgamequiz.utils.FirebaseUtils;
 
 import static project.rew.iqgamequiz.LoginActivity.mAuth;
 
@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
 
         getData();
 
-        play.setOnClickListener(view -> openActivity(PlaySelectMode.class));
+        play.setOnClickListener(view -> openActivity(SelectGeneralKnowlage.class));
         profile.setOnClickListener(view -> openActivity(Profile.class));
         friends.setOnClickListener(view -> openActivity(Friends.class));
         top_glory.setOnClickListener(view -> openActivity(TopGlory.class));
@@ -65,27 +65,27 @@ public class MainActivity extends AppCompatActivity {
         finish();
     }
 
-    private void getData(){
+    private void getData() {
         if (mAuth.getCurrentUser() != null) {
-            Constants.email=mAuth.getCurrentUser().getEmail();
+            FirebaseUtils.email = mAuth.getCurrentUser().getEmail();
             DocumentReference documentReference = fstore.collection("users").document(Objects.requireNonNull(mAuth.getCurrentUser().getEmail()));
             documentReference.addSnapshotListener((value, error) -> {
-                if (value!=null) {
+                if (value != null) {
                     if (value.exists()) {
-                        Constants.coins= Objects.requireNonNull(value.get("IqCoins")).toString()+" ";
-                        Constants.glory= Objects.requireNonNull(value.get("glory")).toString()+" ";
-                        Constants.username= Objects.requireNonNull(value.get("username")).toString();
-                        coins.setText(Constants.coins);
-                        glory.setText(Constants.glory);
-                        username.setText(Constants.username);
+                        FirebaseUtils.coins = Objects.requireNonNull(value.get("IqCoins")).toString() + " ";
+                        FirebaseUtils.glory = Objects.requireNonNull(value.get("glory")).toString() + " ";
+                        FirebaseUtils.username = Objects.requireNonNull(value.get("username")).toString();
+                        coins.setText(FirebaseUtils.coins);
+                        glory.setText(FirebaseUtils.glory);
+                        username.setText(FirebaseUtils.username);
                     }
                 }
             });
         }
     }
 
-    private void openActivity(Class<?> cls){
-        Intent intent = new Intent(MainActivity.this,cls);
+    private void openActivity(Class<?> cls) {
+        Intent intent = new Intent(MainActivity.this, cls);
         startActivity(intent);
     }
 
