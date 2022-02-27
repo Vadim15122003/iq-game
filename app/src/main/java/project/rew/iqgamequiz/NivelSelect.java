@@ -47,7 +47,7 @@ public class NivelSelect extends AppCompatActivity {
 
         viewPager = findViewById(R.id.viewpager);
         categorie = getIntent().getStringExtra("categorie");
-        ref = FirebaseDatabase.getInstance().getReference().child("RO").child(categorie);
+        ref = FirebaseDatabase.getInstance().getReference().child("RO").child("Categories").child(categorie);
         coins = findViewById(R.id.iq_coins);
         glory = findViewById(R.id.glory);
 
@@ -57,7 +57,7 @@ public class NivelSelect extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<DataSnapshot> task) {
                 if (task.isSuccessful()) {
-                    categorieId = task.getResult().toString();
+                    categorieId = task.getResult().getValue().toString();
                 }
             }
         });

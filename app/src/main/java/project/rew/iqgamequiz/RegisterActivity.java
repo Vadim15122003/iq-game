@@ -27,7 +27,9 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static project.rew.iqgamequiz.LoginActivity.mAuth;
@@ -112,11 +114,33 @@ public class RegisterActivity extends AppCompatActivity {
                                         if (task.isSuccessful()) {
                                             progressDialog.dismiss();
                                             DocumentReference documentReference = fstore.collection("users").document(email);
+                                            DocumentReference documentReference1=fstore.collection("users").document(email)
+                                                    .collection("images").document("selected");
+                                            DocumentReference documentReference2=fstore.collection("users").document(email)
+                                                    .collection("images").document("images");
                                             Map<String, Object> user = new HashMap<>();
                                             user.put("username", userName);
                                             user.put("IqCoins", 0);
                                             user.put("glory", 0);
+                                            Map<String,Object> selected=new HashMap<>();
                                             documentReference.set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void unused) {
+
+                                                }
+                                            });
+                                            selected.put("id","0");
+                                            documentReference1.set(selected).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void unused) {
+
+                                                }
+                                            });
+                                            Map<String,Object> images=new HashMap<>();
+                                            List<String> ids=new ArrayList<>();
+                                            ids.add("0");
+                                            images.put("id",ids);
+                                            documentReference2.set(images).addOnSuccessListener(new OnSuccessListener<Void>() {
                                                 @Override
                                                 public void onSuccess(Void unused) {
 

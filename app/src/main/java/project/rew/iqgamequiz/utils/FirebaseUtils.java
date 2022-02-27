@@ -21,7 +21,7 @@ import java.util.Map;
 import project.rew.iqgamequiz.Nivel;
 
 public class FirebaseUtils extends AppCompatActivity {
-    public static String coins, glory, username, title, email;
+    public static String coins, glory, username, title, email, image;
     static FirebaseFirestore fstore;
 
     public static void addCoins(int x, TextView tcoins) {
@@ -95,5 +95,26 @@ public class FirebaseUtils extends AppCompatActivity {
 
     public static int getInt(String toConvert) {
         return Integer.parseInt(toConvert.replaceAll("[^0-9.]", ""));
+    }
+
+    public static void setSelectedProfileImage(String id) {
+        fstore = FirebaseFirestore.getInstance();
+        DocumentReference documentReference = fstore.collection("users").document(email)
+                .collection("images").document("selected");
+        documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        documentReference.update("id", id);
+                    } else {
+                        Map<String, Object> nivel = new HashMap<>();
+                        nivel.put("id", id);
+                        documentReference.set(nivel);
+                    }
+                }
+            }
+        });
     }
 }

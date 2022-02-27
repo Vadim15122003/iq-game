@@ -132,7 +132,7 @@ public class Questions extends AppCompatActivity {
         glory.setText(FirebaseUtils.glory);
         coins.setText(FirebaseUtils.coins);
 
-        ref = FirebaseDatabase.getInstance().getReference().child("RO").child(categorie).child("nivels").child(String.valueOf(nivel)).child("questions");
+        ref = FirebaseDatabase.getInstance().getReference().child("RO").child("Categories").child(categorie).child("nivels").child(String.valueOf(nivel)).child("questions");
 
         ref.addValueEventListener(new ValueEventListener() {
             @Override

@@ -1,5 +1,6 @@
 package project.rew.iqgamequiz;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -8,8 +9,16 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.squareup.picasso.Picasso;
 
 import java.util.Objects;
 
@@ -27,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
     TextView coins, glory, username, title;
     ImageView profile_img, play, profile, friends, top_glory, settings;
     FirebaseFirestore fstore;
+    DatabaseReference ref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
         fstore = FirebaseFirestore.getInstance();
         if (mAuth.getCurrentUser() == null)
             sendUserToLoginActivity();
+        ref = FirebaseDatabase.getInstance().getReference().child("RO");
 
         coins = findViewById(R.id.iq_coins);
         glory = findViewById(R.id.glory);
@@ -81,6 +92,30 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
             });
+
+            fstore.collection("users").document(mAuth.getCurrentUser().getEmail())
+                    .collection("images").document("selected").get()
+                    .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                        @Override
+                        public void onSuccess(DocumentSnapshot documentSnapshot) {
+                            if (documentSnapshot.exists()){
+                                ref.child("Images").child(documentSnapshot.get("id").toString()).addValueEventListener(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                        if (snapshot.exists()){
+                                            FirebaseUtils.image=snapshot.getValue().toString();
+                                            Picasso.get().load(FirebaseUtils.image).into(profile_img);
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
+
+                                    }
+                                });
+                            }
+                        }
+                    });
         }
     }
 

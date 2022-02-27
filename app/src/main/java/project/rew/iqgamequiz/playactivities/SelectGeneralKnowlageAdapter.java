@@ -1,6 +1,5 @@
 package project.rew.iqgamequiz.playactivities;
 
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,8 +19,6 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-import project.rew.iqgamequiz.NivelSelect;
-import project.rew.iqgamequiz.Questions;
 import project.rew.iqgamequiz.R;
 
 public class SelectGeneralKnowlageAdapter extends RecyclerView.Adapter<SelectGeneralKnowlageAdapter.ViewHolder> {
@@ -38,7 +35,7 @@ public class SelectGeneralKnowlageAdapter extends RecyclerView.Adapter<SelectGen
     @Override
     public SelectGeneralKnowlageAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         return new ViewHolder(LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_knew_categorie, parent, false));
+                .inflate(R.layout.maket_categoire, parent, false));
     }
 
     @Override

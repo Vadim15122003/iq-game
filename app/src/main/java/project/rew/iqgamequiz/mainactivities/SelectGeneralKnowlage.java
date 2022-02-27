@@ -40,7 +40,7 @@ public class SelectGeneralKnowlage extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         recyclerView = findViewById(R.id.recyclerview);
-        databaseReference = FirebaseDatabase.getInstance().getReference().child("RO");
+        databaseReference = FirebaseDatabase.getInstance().getReference().child("RO").child("Categories");
 
         recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
         recyclerView.setHasFixedSize(true);
@@ -68,7 +68,7 @@ public class SelectGeneralKnowlage extends AppCompatActivity {
             @NonNull
             @Override
             public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_knew_categorie, parent, false);
+                View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.maket_categoire, parent, false);
                 return new MyViewHolder(v);
             }
         };
@@ -78,7 +78,6 @@ public class SelectGeneralKnowlage extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
         Intent intent=new Intent(SelectGeneralKnowlage.this, MainActivity.class);
         startActivity(intent);
     }
