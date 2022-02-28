@@ -9,7 +9,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -45,25 +47,30 @@ import project.rew.iqgamequiz.Question;
 import project.rew.iqgamequiz.R;
 import project.rew.iqgamequiz.RegisterActivity;
 import project.rew.iqgamequiz.SelectImageAdapter;
+import project.rew.iqgamequiz.SelectTitleAdapter;
+import project.rew.iqgamequiz.Title;
 import project.rew.iqgamequiz.utils.FirebaseUtils;
 
 import static project.rew.iqgamequiz.LoginActivity.mAuth;
 
 public class Profile extends AppCompatActivity {
 
-    TextView coins, glory, username, title;
-    ImageView profile_img,profile_img_select;
+    TextView coins, glory, username, title, title_select;
+    ImageView profile_img, profile_img_select, title_logo, title_image, title_logo_select;
     EditText newUserName;
     Button updateUserName;
     FirebaseFirestore fstore;
     DatabaseReference ref;
     ProgressDialog progressDialog;
-    Dialog selectProfileImage;
-    CardView selectPICardView;
-    RecyclerView recyclerView;
+    Dialog selectProfileImage, selectTitle;
+    CardView selectPICardView, selectTCardView;
+    RecyclerView recyclerView, recyclerViewT;
     SelectImageAdapter adapter;
+    SelectTitleAdapter selectTitleAdapter;
     List<String> imagesId = new ArrayList<>();
-    List<ProfileImage> images =new ArrayList<>();
+    List<ProfileImage> images = new ArrayList<>();
+    List<String> titlesId = new ArrayList<>();
+    List<Title> titles = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,17 +86,31 @@ public class Profile extends AppCompatActivity {
         newUserName = findViewById(R.id.inputUsername);
         updateUserName = findViewById(R.id.updateUserName);
         selectPICardView = findViewById(R.id.cardView_select);
-        profile_img_select=findViewById(R.id.profile_img_select);
+        profile_img_select = findViewById(R.id.profile_img_select);
+        title_logo = findViewById(R.id.title_logo);
+        title_image = findViewById(R.id.title_image);
+        title_select = findViewById(R.id.title_select);
+        title_logo_select = findViewById(R.id.title_logo_select);
+        selectTCardView = findViewById(R.id.select_title);
         fstore = FirebaseFirestore.getInstance();
         ref = FirebaseDatabase.getInstance().getReference().child("RO");
         progressDialog = new ProgressDialog(this);
+
+        selectTitle = new Dialog(Profile.this, R.style.DialogTransparentBg);
+        selectTitle.setContentView(R.layout.dialog_select_title);
+        selectTitle.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        selectTitle.setCancelable(true);
+        WindowManager.LayoutParams lp = selectTitle.getWindow().getAttributes();
+        lp.dimAmount = 0.7f;
+        selectTitle.getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+        recyclerViewT = selectTitle.findViewById(R.id.recyclerview);
 
         selectProfileImage = new Dialog(Profile.this, R.style.DialogTransparentBg);
         selectProfileImage.setContentView(R.layout.dialog_select_profile_image);
         selectProfileImage.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         selectProfileImage.setCancelable(true);
-        WindowManager.LayoutParams lp = selectProfileImage.getWindow().getAttributes();
-        lp.dimAmount = 0.7f;
+        WindowManager.LayoutParams lp1 = selectProfileImage.getWindow().getAttributes();
+        lp1.dimAmount = 0.7f;
         selectProfileImage.getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
         recyclerView = selectProfileImage.findViewById(R.id.recyclerview);
 
@@ -97,14 +118,24 @@ public class Profile extends AppCompatActivity {
         glory.setText(FirebaseUtils.glory);
         username.setText(FirebaseUtils.username);
         newUserName.setText(FirebaseUtils.username);
-        Picasso.get().load(FirebaseUtils.image).into(profile_img);
-        Picasso.get().load(FirebaseUtils.image).into(profile_img_select);
+        Picasso.get().load(FirebaseUtils.profileImage.getImage()).into(profile_img);
+        Picasso.get().load(FirebaseUtils.profileImage.getImage()).into(profile_img_select);
+        title.setText(FirebaseUtils.title.getTitle());
+        title.setTextColor(Color.parseColor(FirebaseUtils.title.getColor()));
+        title_select.setText(FirebaseUtils.title.getTitle());
+        title_select.setTextColor(Color.parseColor(FirebaseUtils.title.getColor()));
+        Picasso.get().load(FirebaseUtils.title.getLogo()).into(title_logo);
+        Picasso.get().load(FirebaseUtils.title.getLogo()).into(title_logo_select);
+        if (FirebaseUtils.title.getImage() != null)
+            Picasso.get().load(FirebaseUtils.title.getImage()).into(title_image);
 
         selectPICardView.setOnClickListener(v -> {
             selectProfileImage.show();
         });
         recyclerView.setLayoutManager(new GridLayoutManager(this, 3));
         recyclerView.setHasFixedSize(true);
+        recyclerViewT.setLayoutManager(new GridLayoutManager(this, 2));
+        recyclerViewT.setHasFixedSize(true);
 
         fstore.collection("users").document(FirebaseUtils.email)
                 .collection("images").document("images").get()
@@ -117,9 +148,46 @@ public class Profile extends AppCompatActivity {
                                 ref.child("Images").child(imageId).addValueEventListener(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                        images.add(new ProfileImage(imageId,snapshot.getValue().toString()));
+                                        images.add(new ProfileImage(imageId, snapshot.getValue().toString()));
                                         adapter = new SelectImageAdapter(images, profile_img, profile_img_select);
                                         recyclerView.setAdapter(adapter);
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
+
+                                    }
+                                });
+                            }
+                        }
+                    }
+                });
+
+        fstore.collection("users").document(FirebaseUtils.email)
+                .collection("titles").document("titles").get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        if (documentSnapshot.exists()) {
+                            titlesId = (List<String>) documentSnapshot.get("id");
+                            for (String titleId : titlesId) {
+                                Title currentTitle = new Title();
+                                currentTitle.setId(titleId);
+                                ref.child("Titles").child(titleId).addValueEventListener(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                        if (snapshot.exists()) {
+                                            currentTitle.setTitle(snapshot.child("title").getValue().toString());
+                                            currentTitle.setColor(snapshot.child("color").getValue().toString());
+                                            currentTitle.setLogo(snapshot.child("logo").getValue().toString());
+                                            if (snapshot.child("image").exists())
+                                                currentTitle.setImage(snapshot.child("image").getValue().toString());
+                                            else currentTitle.setImage(null);
+                                            titles.add(currentTitle);
+                                            selectTitleAdapter = new SelectTitleAdapter(titles, title_select, title_logo_select,
+                                                    title, title_logo);
+                                            recyclerViewT.setAdapter(selectTitleAdapter);
+                                        }
                                     }
 
                                     @Override
@@ -189,11 +257,14 @@ public class Profile extends AppCompatActivity {
             }
         });
 
+        selectTCardView.setOnClickListener(v -> {
+            selectTitle.show();
+        });
     }
 
     @Override
     public void onBackPressed() {
-        Intent intent=new Intent(Profile.this, MainActivity.class);
+        Intent intent = new Intent(Profile.this, MainActivity.class);
         startActivity(intent);
     }
 }

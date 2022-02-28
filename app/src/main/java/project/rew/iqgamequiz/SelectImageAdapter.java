@@ -35,12 +35,12 @@ public class SelectImageAdapter extends RecyclerView.Adapter<SelectImageAdapter.
     public void onBindViewHolder(@NonNull SelectImageAdapter.ViewHolder holder, int position) {
         String currImage = images.get(position).getImage();
         Picasso.get().load(currImage).into(holder.imageView);
-        if (currImage.equals(FirebaseUtils.image))
+        if (images.get(position).getId().equals(FirebaseUtils.profileImage.getId()))
             holder.selected.setVisibility(View.VISIBLE);
         else holder.selected.setVisibility(View.GONE);
 
         holder.imageView.setOnClickListener(v -> {
-            FirebaseUtils.image=images.get(position).getImage();
+            FirebaseUtils.profileImage=images.get(position);
             Picasso.get().load(images.get(position).getImage()).into(image);
             Picasso.get().load(images.get(position).getImage()).into(image1);
             FirebaseUtils.setSelectedProfileImage(images.get(position).getId());

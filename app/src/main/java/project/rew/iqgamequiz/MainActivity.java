@@ -4,7 +4,9 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -34,7 +36,7 @@ import static project.rew.iqgamequiz.LoginActivity.mAuth;
 public class MainActivity extends AppCompatActivity {
 
     TextView coins, glory, username, title;
-    ImageView profile_img, play, profile, friends, top_glory, settings;
+    ImageView profile_img, play, profile, friends, top_glory, settings, title_logo, title_image;
     FirebaseFirestore fstore;
     DatabaseReference ref;
 
@@ -59,6 +61,8 @@ public class MainActivity extends AppCompatActivity {
         friends = findViewById(R.id.friends);
         top_glory = findViewById(R.id.top_glory);
         settings = findViewById(R.id.settings);
+        title_logo = findViewById(R.id.title_logo);
+        title_image = findViewById(R.id.title_image);
 
         getData();
 
@@ -98,13 +102,48 @@ public class MainActivity extends AppCompatActivity {
                     .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                         @Override
                         public void onSuccess(DocumentSnapshot documentSnapshot) {
-                            if (documentSnapshot.exists()){
+                            if (documentSnapshot.exists()) {
                                 ref.child("Images").child(documentSnapshot.get("id").toString()).addValueEventListener(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                        if (snapshot.exists()){
-                                            FirebaseUtils.image=snapshot.getValue().toString();
-                                            Picasso.get().load(FirebaseUtils.image).into(profile_img);
+                                        if (snapshot.exists()) {
+                                            FirebaseUtils.profileImage = new ProfileImage(documentSnapshot.get("id").toString(),snapshot.getValue().toString());
+                                            Picasso.get().load(FirebaseUtils.profileImage.getImage()).into(profile_img);
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
+
+                                    }
+                                });
+                            }
+                        }
+                    });
+
+            fstore.collection("users").document(mAuth.getCurrentUser().getEmail())
+                    .collection("titles").document("selected").get()
+                    .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                        @Override
+                        public void onSuccess(DocumentSnapshot documentSnapshot) {
+                            if (documentSnapshot.exists()) {
+                                FirebaseUtils.title.setId(documentSnapshot.get("id").toString());
+                                ref.child("Titles").child(documentSnapshot.get("id").toString()).addValueEventListener(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                        if (snapshot.exists()) {
+                                            FirebaseUtils.title.setTitle(snapshot.child("title").getValue().toString());
+                                            title.setText(FirebaseUtils.title.getTitle());
+                                            FirebaseUtils.title.setColor(snapshot.child("color").getValue().toString());
+                                            title.setTextColor(Color.parseColor(FirebaseUtils.title.getColor()));
+                                            FirebaseUtils.title.setLogo(snapshot.child("logo").getValue().toString());
+                                            Picasso.get().load(FirebaseUtils.title.getLogo()).into(title_logo);
+                                            if (snapshot.child("image").exists()) {
+                                                FirebaseUtils.title.setImage(snapshot.child("image").getValue().toString());
+                                                title_image.setVisibility(View.VISIBLE);
+                                                Picasso.get().load(FirebaseUtils.title.getImage()).into(title_image);
+                                            }
+                                            else title_image.setVisibility(View.GONE);
                                         }
                                     }
 

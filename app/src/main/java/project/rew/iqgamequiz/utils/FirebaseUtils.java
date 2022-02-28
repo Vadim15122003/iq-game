@@ -19,9 +19,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 import project.rew.iqgamequiz.Nivel;
+import project.rew.iqgamequiz.ProfileImage;
+import project.rew.iqgamequiz.Title;
 
 public class FirebaseUtils extends AppCompatActivity {
-    public static String coins, glory, username, title, email, image;
+    public static String coins, glory, username, email;
+    public static ProfileImage profileImage;
+    public static Title title = new Title();
     static FirebaseFirestore fstore;
 
     public static void addCoins(int x, TextView tcoins) {
@@ -101,6 +105,27 @@ public class FirebaseUtils extends AppCompatActivity {
         fstore = FirebaseFirestore.getInstance();
         DocumentReference documentReference = fstore.collection("users").document(email)
                 .collection("images").document("selected");
+        documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        documentReference.update("id", id);
+                    } else {
+                        Map<String, Object> nivel = new HashMap<>();
+                        nivel.put("id", id);
+                        documentReference.set(nivel);
+                    }
+                }
+            }
+        });
+    }
+
+    public static void setSelectedTitleImage(String id) {
+        fstore = FirebaseFirestore.getInstance();
+        DocumentReference documentReference = fstore.collection("users").document(email)
+                .collection("titles").document("selected");
         documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
