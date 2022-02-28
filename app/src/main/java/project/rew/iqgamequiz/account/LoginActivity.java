@@ -1,4 +1,4 @@
-package project.rew.iqgamequiz;
+package project.rew.iqgamequiz.account;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -17,6 +17,9 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+
+import project.rew.iqgamequiz.MainActivity;
+import project.rew.iqgamequiz.R;
 
 
 public class LoginActivity extends AppCompatActivity {

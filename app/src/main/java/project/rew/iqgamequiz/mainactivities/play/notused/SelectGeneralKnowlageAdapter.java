@@ -1,4 +1,4 @@
-package project.rew.iqgamequiz.playactivities;
+package project.rew.iqgamequiz.mainactivities.play.notused;
 
 import android.view.LayoutInflater;
 import android.view.View;

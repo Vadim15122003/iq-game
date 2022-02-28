@@ -1,4 +1,4 @@
-package project.rew.iqgamequiz;
+package project.rew.iqgamequiz.mainactivities.play.questions.items;
 
 public class Answer {
     String answer;

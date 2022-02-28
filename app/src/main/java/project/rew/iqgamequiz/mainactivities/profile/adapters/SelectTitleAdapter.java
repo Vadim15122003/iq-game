@@ -1,11 +1,10 @@
-package project.rew.iqgamequiz;
+package project.rew.iqgamequiz.mainactivities.profile.adapters;
 
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -16,6 +15,8 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
+import project.rew.iqgamequiz.R;
+import project.rew.iqgamequiz.mainactivities.profile.items.Title;
 import project.rew.iqgamequiz.utils.FirebaseUtils;
 
 public class SelectTitleAdapter extends RecyclerView.Adapter<SelectTitleAdapter.ViewHolder> {

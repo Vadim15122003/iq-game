@@ -1,4 +1,4 @@
-package project.rew.iqgamequiz.utils;
+package project.rew.iqgamequiz.mainactivities.play.nivels;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -16,9 +16,6 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
@@ -26,11 +23,10 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.List;
 
-import project.rew.iqgamequiz.GivenReward;
-import project.rew.iqgamequiz.Nivel;
-import project.rew.iqgamequiz.Questions;
 import project.rew.iqgamequiz.R;
-import project.rew.iqgamequiz.RewardsAdapter;
+import project.rew.iqgamequiz.mainactivities.play.questions.items.GivenReward;
+import project.rew.iqgamequiz.mainactivities.play.questions.QuestionsActivity;
+import project.rew.iqgamequiz.mainactivities.play.questions.adapters.RewardsAdapter;
 
 public class NivelSelectSlideAdapter extends RecyclerView.Adapter<NivelSelectSlideAdapter.ViewHolder> {
 
@@ -110,7 +106,7 @@ public class NivelSelectSlideAdapter extends RecyclerView.Adapter<NivelSelectSli
                 holder.blocked.setVisibility(View.GONE);
                 holder.forNext.setVisibility(View.GONE);
                 holder.image.setOnClickListener(view -> {
-                    Intent intent = new Intent(context, Questions.class);
+                    Intent intent = new Intent(context, QuestionsActivity.class);
                     intent.putExtra("categorie", categorie);
                     intent.putExtra("categorieId", categorieId);
                     intent.putExtra("nivel", position);

@@ -1,4 +1,4 @@
-package project.rew.iqgamequiz.playactivities;
+package project.rew.iqgamequiz.mainactivities.play.notused;
 
 public class KnewCategorie {
     private String title;

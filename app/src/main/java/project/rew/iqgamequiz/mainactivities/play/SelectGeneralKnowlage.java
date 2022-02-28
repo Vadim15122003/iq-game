@@ -1,4 +1,4 @@
-package project.rew.iqgamequiz.mainactivities;
+package project.rew.iqgamequiz.mainactivities.play;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,9 +22,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
 
 import project.rew.iqgamequiz.MainActivity;
-import project.rew.iqgamequiz.NivelSelect;
 import project.rew.iqgamequiz.R;
-import project.rew.iqgamequiz.playactivities.KnewCategorie;
+import project.rew.iqgamequiz.mainactivities.play.notused.KnewCategorie;
+import project.rew.iqgamequiz.mainactivities.play.nivels.NivelSelectActivity;
 
 public class SelectGeneralKnowlage extends AppCompatActivity {
 
@@ -58,7 +58,7 @@ public class SelectGeneralKnowlage extends AppCompatActivity {
                 holder.cardView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Intent intent=new Intent(SelectGeneralKnowlage.this, NivelSelect.class);
+                        Intent intent=new Intent(SelectGeneralKnowlage.this, NivelSelectActivity.class);
                         intent.putExtra("categorie",getRef(position).getKey());
                         startActivity(intent);
                     }

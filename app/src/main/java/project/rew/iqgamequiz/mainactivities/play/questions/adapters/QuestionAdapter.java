@@ -1,4 +1,4 @@
-package project.rew.iqgamequiz.utils;
+package project.rew.iqgamequiz.mainactivities.play.questions.adapters;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -26,9 +26,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import project.rew.iqgamequiz.NivelSelect;
-import project.rew.iqgamequiz.Question;
 import project.rew.iqgamequiz.R;
+import project.rew.iqgamequiz.mainactivities.play.nivels.NivelSelectActivity;
+import project.rew.iqgamequiz.mainactivities.play.questions.items.Question;
+import project.rew.iqgamequiz.utils.FirebaseUtils;
 
 public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHolder> {
 
@@ -339,7 +340,7 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
     }
 
     public void goToBackActivity() {
-        Intent intent = new Intent(context, NivelSelect.class);
+        Intent intent = new Intent(context, NivelSelectActivity.class);
         intent.putExtra("categorie", categorie);
         context.startActivity(intent);
     }

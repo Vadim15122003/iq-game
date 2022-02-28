@@ -13,14 +13,13 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import project.rew.iqgamequiz.Nivel;
-import project.rew.iqgamequiz.ProfileImage;
-import project.rew.iqgamequiz.Title;
+import project.rew.iqgamequiz.mainactivities.play.nivels.Nivel;
+import project.rew.iqgamequiz.mainactivities.profile.items.ProfileImage;
+import project.rew.iqgamequiz.mainactivities.profile.items.Title;
 
 public class FirebaseUtils extends AppCompatActivity {
     public static String coins, glory, username, email;

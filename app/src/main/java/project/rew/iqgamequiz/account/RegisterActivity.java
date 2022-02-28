@@ -1,7 +1,6 @@
-package project.rew.iqgamequiz;
+package project.rew.iqgamequiz.account;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ProgressDialog;
@@ -21,10 +20,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
@@ -32,7 +28,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static project.rew.iqgamequiz.LoginActivity.mAuth;
+import project.rew.iqgamequiz.R;
+
+import static project.rew.iqgamequiz.account.LoginActivity.mAuth;
 
 public class RegisterActivity extends AppCompatActivity {
 

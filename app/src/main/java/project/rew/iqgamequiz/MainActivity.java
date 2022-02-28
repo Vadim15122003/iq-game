@@ -24,14 +24,16 @@ import com.squareup.picasso.Picasso;
 
 import java.util.Objects;
 
-import project.rew.iqgamequiz.mainactivities.Friends;
-import project.rew.iqgamequiz.mainactivities.Profile;
-import project.rew.iqgamequiz.mainactivities.Settings;
-import project.rew.iqgamequiz.mainactivities.TopGlory;
-import project.rew.iqgamequiz.mainactivities.SelectGeneralKnowlage;
+import project.rew.iqgamequiz.account.LoginActivity;
+import project.rew.iqgamequiz.mainactivities.friends.Friends;
+import project.rew.iqgamequiz.mainactivities.profile.ProfileActivity;
+import project.rew.iqgamequiz.mainactivities.settings.Settings;
+import project.rew.iqgamequiz.mainactivities.topglory.TopGlory;
+import project.rew.iqgamequiz.mainactivities.play.SelectGeneralKnowlage;
+import project.rew.iqgamequiz.mainactivities.profile.items.ProfileImage;
 import project.rew.iqgamequiz.utils.FirebaseUtils;
 
-import static project.rew.iqgamequiz.LoginActivity.mAuth;
+import static project.rew.iqgamequiz.account.LoginActivity.mAuth;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -67,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
         getData();
 
         play.setOnClickListener(view -> openActivity(SelectGeneralKnowlage.class));
-        profile.setOnClickListener(view -> openActivity(Profile.class));
+        profile.setOnClickListener(view -> openActivity(ProfileActivity.class));
         friends.setOnClickListener(view -> openActivity(Friends.class));
         top_glory.setOnClickListener(view -> openActivity(TopGlory.class));
         settings.setOnClickListener(view -> openActivity(Settings.class));

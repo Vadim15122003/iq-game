@@ -1,18 +1,16 @@
-package project.rew.iqgamequiz.mainactivities;
+package project.rew.iqgamequiz.mainactivities.settings;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 
-import project.rew.iqgamequiz.LoginActivity;
-import project.rew.iqgamequiz.MainActivity;
+import project.rew.iqgamequiz.account.LoginActivity;
 import project.rew.iqgamequiz.R;
 
-import static project.rew.iqgamequiz.LoginActivity.mAuth;
+import static project.rew.iqgamequiz.account.LoginActivity.mAuth;
 
 public class Settings extends AppCompatActivity {
 

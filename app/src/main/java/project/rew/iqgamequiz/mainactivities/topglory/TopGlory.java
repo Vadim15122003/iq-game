@@ -1,4 +1,4 @@
-package project.rew.iqgamequiz.mainactivities;
+package project.rew.iqgamequiz.mainactivities.topglory;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -7,12 +7,12 @@ import android.view.WindowManager;
 
 import project.rew.iqgamequiz.R;
 
-public class Friends extends AppCompatActivity {
+public class TopGlory extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_friends);
+        setContentView(R.layout.activity_top_glory);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
     }

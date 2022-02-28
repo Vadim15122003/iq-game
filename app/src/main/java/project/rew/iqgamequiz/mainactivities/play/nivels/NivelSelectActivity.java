@@ -1,4 +1,4 @@
-package project.rew.iqgamequiz;
+package project.rew.iqgamequiz.mainactivities.play.nivels;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -26,11 +26,11 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.ArrayList;
 import java.util.List;
 
-import project.rew.iqgamequiz.mainactivities.SelectGeneralKnowlage;
+import project.rew.iqgamequiz.R;
+import project.rew.iqgamequiz.mainactivities.play.SelectGeneralKnowlage;
 import project.rew.iqgamequiz.utils.FirebaseUtils;
-import project.rew.iqgamequiz.utils.NivelSelectSlideAdapter;
 
-public class NivelSelect extends AppCompatActivity {
+public class NivelSelectActivity extends AppCompatActivity {
 
     DatabaseReference ref;
     String categorie, categorieId;
@@ -142,7 +142,7 @@ public class NivelSelect extends AppCompatActivity {
                                     currNivel.setCurent("0");
 
 
-                                adapter = new NivelSelectSlideAdapter(nivels, categorie, categorieId, NivelSelect.this);
+                                adapter = new NivelSelectSlideAdapter(nivels, categorie, categorieId, NivelSelectActivity.this);
                                 viewPager.setAdapter(adapter);
 
 
@@ -157,7 +157,7 @@ public class NivelSelect extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        Intent intent = new Intent(NivelSelect.this, SelectGeneralKnowlage.class);
+        Intent intent = new Intent(NivelSelectActivity.this, SelectGeneralKnowlage.class);
         startActivity(intent);
     }
 }

@@ -1,4 +1,4 @@
-package project.rew.iqgamequiz;
+package project.rew.iqgamequiz.mainactivities.play.nivels;
 
 public class Nivel {
     String title,image,curent,nedeed,id;

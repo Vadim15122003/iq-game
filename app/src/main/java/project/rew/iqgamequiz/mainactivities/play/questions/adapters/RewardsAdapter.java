@@ -1,4 +1,4 @@
-package project.rew.iqgamequiz;
+package project.rew.iqgamequiz.mainactivities.play.questions.adapters;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +10,9 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
+
+import project.rew.iqgamequiz.R;
+import project.rew.iqgamequiz.mainactivities.play.questions.items.GivenReward;
 
 public class RewardsAdapter extends RecyclerView.Adapter<RewardsAdapter.ViewHolder>{
 

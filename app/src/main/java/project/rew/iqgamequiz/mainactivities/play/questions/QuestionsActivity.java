@@ -1,4 +1,4 @@
-package project.rew.iqgamequiz;
+package project.rew.iqgamequiz.mainactivities.play.questions;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -28,11 +28,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import project.rew.iqgamequiz.R;
+import project.rew.iqgamequiz.mainactivities.play.nivels.NivelSelectActivity;
+import project.rew.iqgamequiz.mainactivities.play.questions.adapters.QuestionAdapter;
+import project.rew.iqgamequiz.mainactivities.play.questions.items.Answer;
+import project.rew.iqgamequiz.mainactivities.play.questions.items.Question;
 import project.rew.iqgamequiz.utils.FirebaseUtils;
-import project.rew.iqgamequiz.utils.QuestionAdapter;
 
 
-public class Questions extends AppCompatActivity {
+public class QuestionsActivity extends AppCompatActivity {
     DatabaseReference ref;
     String categorie, categorieId;
     ViewPager2 viewPager;
@@ -80,9 +84,9 @@ public class Questions extends AppCompatActivity {
         img_cinzeci = findViewById(R.id.img_cinzeci);
         img_corect = findViewById(R.id.img_corect);
         pause = findViewById(R.id.pause);
-        d_pause = new Dialog(Questions.this, R.style.DialogTransparentBg);
-        d_exit = new Dialog(Questions.this, R.style.DialogTransparentBg);
-        d_restart = new Dialog(Questions.this, R.style.DialogTransparentBg);
+        d_pause = new Dialog(QuestionsActivity.this, R.style.DialogTransparentBg);
+        d_exit = new Dialog(QuestionsActivity.this, R.style.DialogTransparentBg);
+        d_restart = new Dialog(QuestionsActivity.this, R.style.DialogTransparentBg);
         d_pause.setContentView(R.layout.dialog_pause);
         d_exit.setContentView(R.layout.dialog_quit);
         d_restart.setContentView(R.layout.dialog_restart);
@@ -158,7 +162,7 @@ public class Questions extends AppCompatActivity {
                     }
                     Collections.shuffle(questions);
                 }
-                adapter = new QuestionAdapter(questions, viewPager, cards, Questions.this,
+                adapter = new QuestionAdapter(questions, viewPager, cards, QuestionsActivity.this,
                         categorie, categorieId, String.valueOf(nivel), coins, glory, double_change, swichq, cinzeci, corect,
                         img_double_change, img_swichq, img_cinzeci, img_corect,
                         tdouble_change, tswichq, tcinzeci, tcorect);
@@ -194,7 +198,7 @@ public class Questions extends AppCompatActivity {
             d_exit.show();
         });
         e_yes.setOnClickListener(v -> {
-            Intent intent = new Intent(Questions.this, NivelSelect.class);
+            Intent intent = new Intent(QuestionsActivity.this, NivelSelectActivity.class);
             intent.putExtra("categorie", categorie);
             startActivity(intent);
             finish();

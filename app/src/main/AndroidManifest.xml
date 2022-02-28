@@ -11,33 +11,33 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.IQGame">
-        <activity android:name=".NivelSelect"
+        <activity android:name=".mainactivities.play.nivels.NivelSelectActivity"
             android:screenOrientation="portrait"/>
-        <activity android:name=".Questions"
+        <activity android:name=".mainactivities.play.questions.QuestionsActivity"
             android:screenOrientation="portrait"/>
         <activity
-            android:name=".mainactivities.SelectGeneralKnowlage"
+            android:name=".mainactivities.play.SelectGeneralKnowlage"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".mainactivities.Settings"
+            android:name=".mainactivities.settings.Settings"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".mainactivities.TopGlory"
+            android:name=".mainactivities.topglory.TopGlory"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".mainactivities.Friends"
+            android:name=".mainactivities.friends.Friends"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".mainactivities.Profile"
+            android:name=".mainactivities.profile.ProfileActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".mainactivities.PlaySelectMode"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".RegisterActivity"
+            android:name=".account.RegisterActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".LoginActivity"
+            android:name=".account.LoginActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".MainActivity"

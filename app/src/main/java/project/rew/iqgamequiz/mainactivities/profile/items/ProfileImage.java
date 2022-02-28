@@ -1,4 +1,4 @@
-package project.rew.iqgamequiz;
+package project.rew.iqgamequiz.mainactivities.profile.items;
 
 public class ProfileImage {
     String id,image;
