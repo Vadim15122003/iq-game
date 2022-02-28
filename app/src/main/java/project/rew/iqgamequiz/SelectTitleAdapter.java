@@ -21,16 +21,16 @@ import project.rew.iqgamequiz.utils.FirebaseUtils;
 public class SelectTitleAdapter extends RecyclerView.Adapter<SelectTitleAdapter.ViewHolder> {
     List<Title> titles;
     TextView title, title_select;
-    ImageView title_logo, title_logo_select;
-    ;
+    ImageView title_logo, title_logo_select, title_image;
 
     public SelectTitleAdapter(List<Title> titles, TextView title_select, ImageView title_logo_select,
-                              TextView title, ImageView title_logo) {
+                              TextView title, ImageView title_logo, ImageView title_image) {
         this.titles = titles;
         this.title_select = title_select;
         this.title_logo_select = title_logo_select;
         this.title = title;
         this.title_logo = title_logo;
+        this.title_image = title_image;
     }
 
     @NonNull
@@ -57,6 +57,10 @@ public class SelectTitleAdapter extends RecyclerView.Adapter<SelectTitleAdapter.
             Picasso.get().load(titles.get(position).getLogo()).into(title_logo);
             title_select.setText(titles.get(position).getTitle());
             Picasso.get().load(titles.get(position).getLogo()).into(title_logo_select);
+            if (titles.get(position).getImage() != null) {
+                title_image.setVisibility(View.VISIBLE);
+                Picasso.get().load(titles.get(position).getImage()).into(title_image);
+            } else title_image.setVisibility(View.GONE);
             notifyDataSetChanged();
         });
 
