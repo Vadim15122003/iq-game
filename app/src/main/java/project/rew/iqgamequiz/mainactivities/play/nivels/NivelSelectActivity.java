@@ -20,14 +20,23 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import project.rew.iqgamequiz.R;
 import project.rew.iqgamequiz.mainactivities.play.SelectGeneralKnowlage;
+import project.rew.iqgamequiz.mainactivities.play.questions.GivenReward;
+import project.rew.iqgamequiz.mainactivities.play.questions.RewardType;
+import project.rew.iqgamequiz.mainactivities.profile.items.ProfileImage;
+import project.rew.iqgamequiz.mainactivities.profile.items.Title;
 import project.rew.iqgamequiz.utils.FirebaseUtils;
 
 public class NivelSelectActivity extends AppCompatActivity {
@@ -37,6 +46,7 @@ public class NivelSelectActivity extends AppCompatActivity {
     ViewPager2 viewPager;
     NivelSelectSlideAdapter adapter;
     TextView coins, glory;
+    FirebaseFirestore fstore;
     List<Nivel> nivels = new ArrayList<>();
 
     @Override
@@ -50,6 +60,7 @@ public class NivelSelectActivity extends AppCompatActivity {
         ref = FirebaseDatabase.getInstance().getReference().child("RO").child("Categories").child(categorie);
         coins = findViewById(R.id.iq_coins);
         glory = findViewById(R.id.glory);
+        fstore = FirebaseFirestore.getInstance();
 
         glory.setText(FirebaseUtils.glory);
         coins.setText(FirebaseUtils.coins);
@@ -102,37 +113,177 @@ public class NivelSelectActivity extends AppCompatActivity {
 
     public void setNivels() {
         for (Nivel currNivel : nivels) {
-            ref.child("nivels").child(currNivel.getId()).child("title").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+
+            DocumentReference documentReference = fstore.collection("users").document(FirebaseUtils.email)
+                    .collection("rewards_claimed").document(categorieId);
+            documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override
-                public void onComplete(@NonNull Task<DataSnapshot> task) {
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                     if (task.isSuccessful()) {
-                        currNivel.setTitle(String.valueOf(task.getResult().getValue()));
+                        DocumentSnapshot document = task.getResult();
+                        List<String> claimed = new ArrayList<>();
+                        if (document.exists()) {
+                            claimed = ((List<String>) document.get(currNivel.getId()));
+                        }
+                        List<String> finalClaimed = claimed;
+                        ref.child("nivels").child(currNivel.getId())
+                                .child("rewards").addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                if (snapshot.exists()) {
+                                    List<GivenReward> givenRewards = new ArrayList<>();
+                                    for (DataSnapshot dss : snapshot.getChildren()) {
+                                        GivenReward givenReward = new GivenReward();
+                                        GivenReward givenReward2 = new GivenReward();
+                                        givenReward.setPointsNedeed(dss.getKey().toString());
+                                        givenReward.setId(dss.child("id").getValue().toString());
+                                        if (dss.child("title").exists() && !dss.child("image").exists()) {
+                                            givenReward.setRewardType(RewardType.Title);
+                                            DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+                                            reference.child("RO").child("Titles").child(dss.child("title").getValue().toString())
+                                                    .addValueEventListener(new ValueEventListener() {
+                                                        @Override
+                                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                            if (snapshot.exists()) {
+                                                                Title currentTitle = new Title();
+                                                                currentTitle.setId(dss.child("title").getValue().toString());
+                                                                currentTitle.setColor(snapshot.child("color").getValue().toString());
+                                                                currentTitle.setLogo(snapshot.child("logo").getValue().toString());
+                                                                currentTitle.setTitle(snapshot.child("title").getValue().toString());
+                                                                givenReward.setTitle(currentTitle);
+                                                                if (finalClaimed != null)
+                                                                    for (String idClaimed : finalClaimed) {
+                                                                        if (givenReward.getId().equals(idClaimed)) {
+                                                                            givenReward.setClaimed(true);
+                                                                            break;
+                                                                        }
+                                                                    }
+                                                                givenRewards.add(givenReward);
+                                                            }
+                                                        }
+
+                                                        @Override
+                                                        public void onCancelled(@NonNull DatabaseError error) {
+
+                                                        }
+                                                    });
+                                        } else if (dss.child("image").exists() && !dss.child("title").exists()) {
+                                            givenReward.setRewardType(RewardType.ProfileImage);
+                                            DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+                                            reference.child("RO").child("Images").child(dss.child("image").getValue().toString())
+                                                    .addValueEventListener(new ValueEventListener() {
+                                                        @Override
+                                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                            if (snapshot.exists()) {
+                                                                ProfileImage profileImage = new ProfileImage(snapshot.getKey().toString(),
+                                                                        snapshot.getValue().toString());
+                                                                givenReward.setProfileImage(profileImage);
+                                                                if (finalClaimed != null)
+                                                                for (String idClaimed : finalClaimed) {
+                                                                    if (givenReward.getId().equals(idClaimed)) {
+                                                                        givenReward.setClaimed(true);
+                                                                        break;
+                                                                    }
+                                                                }
+                                                                givenRewards.add(givenReward);
+                                                            }
+                                                        }
+
+                                                        @Override
+                                                        public void onCancelled(@NonNull DatabaseError error) {
+
+                                                        }
+                                                    });
+                                        } else if (dss.child("image").exists() && dss.child("title").exists()) {
+                                            givenReward2.setPointsNedeed(dss.getKey().toString());
+                                            givenReward2.setId(dss.child("id").getValue().toString());
+
+                                            givenReward.setRewardType(RewardType.Title);
+                                            DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+                                            reference.child("RO").child("Titles").child(dss.child("title").getValue().toString())
+                                                    .addValueEventListener(new ValueEventListener() {
+                                                        @Override
+                                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                            if (snapshot.exists()) {
+                                                                Title currentTitle = new Title();
+                                                                currentTitle.setId(dss.child("title").getValue().toString());
+                                                                currentTitle.setColor(snapshot.child("color").getValue().toString());
+                                                                currentTitle.setLogo(snapshot.child("logo").getValue().toString());
+                                                                currentTitle.setTitle(snapshot.child("title").getValue().toString());
+                                                                givenReward.setTitle(currentTitle);
+                                                                if (finalClaimed != null)
+                                                                for (String idClaimed : finalClaimed) {
+                                                                    if (givenReward.getId().equals(idClaimed)) {
+                                                                        givenReward.setClaimed(true);
+                                                                        givenReward2.setClaimed(true);
+                                                                        break;
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+
+                                                        @Override
+                                                        public void onCancelled(@NonNull DatabaseError error) {
+
+                                                        }
+                                                    });
+
+                                            givenReward2.setRewardType(RewardType.ProfileImage);
+                                            DatabaseReference reference1 = FirebaseDatabase.getInstance().getReference();
+                                            reference1.child("RO").child("Images").child(dss.child("image").getValue().toString())
+                                                    .addValueEventListener(new ValueEventListener() {
+                                                        @Override
+                                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                            if (snapshot.exists()) {
+                                                                ProfileImage profileImage = new ProfileImage(snapshot.getKey().toString(),
+                                                                        snapshot.getValue().toString());
+                                                                givenReward2.setProfileImage(profileImage);
+                                                                givenRewards.add(givenReward);
+                                                                givenRewards.add(givenReward2);
+                                                            }
+                                                        }
+
+                                                        @Override
+                                                        public void onCancelled(@NonNull DatabaseError error) {
+
+                                                        }
+                                                    });
+                                        }
+
+                                    }
+                                    currNivel.setGivenRewards(givenRewards);
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
                     }
                 }
             });
-            ref.child("nivels").child(currNivel.getId()).child("image").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+
+            ref.addValueEventListener(new ValueEventListener() {
                 @Override
-                public void onComplete(@NonNull Task<DataSnapshot> task) {
-                    if (task.isSuccessful()) {
-                        currNivel.setImage(String.valueOf(task.getResult().getValue()));
-                    }
-                }
-            });
-            ref.child("nivels").child(currNivel.getId()).child("atributes").child("toUnlock").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<DataSnapshot> task) {
-                    if (task.isSuccessful()) {
-                        currNivel.setNedeed(String.valueOf(task.getResult().getValue()));
-                    }
-                }
-            });
-            ref.child("id").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<DataSnapshot> task) {
-                    if (task.isSuccessful() && !currNivel.getId().equals("0")) {
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if (snapshot.child("nivels").child(currNivel.getId())
+                            .child("title").exists())
+                        currNivel.setTitle(snapshot.child("nivels").child(currNivel.getId())
+                                .child("title").getValue().toString());
+                    if (snapshot.child("nivels").child(currNivel.getId())
+                            .child("image").exists())
+                        currNivel.setImage(snapshot.child("nivels").child(currNivel.getId())
+                                .child("image").getValue().toString());
+                    if (snapshot.child("nivels").child(currNivel.getId())
+                            .child("atributes").child("toUnlock").exists())
+                        currNivel.setNedeed(snapshot.child("nivels").child(currNivel.getId())
+                                .child("atributes").child("toUnlock").getValue().toString());
+
+                    if (snapshot.child("id").exists() && !currNivel.getId().equals("0")) {
                         FirebaseFirestore fstore = FirebaseFirestore.getInstance();
                         fstore.collection("users").document(FirebaseUtils.email)
-                                .collection("resolved").document(String.valueOf(task.getResult().getValue()))
+                                .collection("resolved").document(snapshot.child("id").getValue().toString())
                                 .get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                             @Override
                             public void onSuccess(DocumentSnapshot documentSnapshot) {
@@ -141,14 +292,17 @@ public class NivelSelectActivity extends AppCompatActivity {
                                 } else
                                     currNivel.setCurent("0");
 
-
                                 adapter = new NivelSelectSlideAdapter(nivels, categorie, categorieId, NivelSelectActivity.this);
                                 viewPager.setAdapter(adapter);
-
 
                             }
                         });
                     } else if (currNivel.getId().equals("0")) currNivel.setCurent("0");
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
                 }
             });
         }

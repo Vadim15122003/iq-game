@@ -20,6 +20,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
 
+import com.google.android.gms.tasks.OnCanceledListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -28,6 +35,9 @@ import java.util.List;
 
 import project.rew.iqgamequiz.R;
 import project.rew.iqgamequiz.mainactivities.play.nivels.NivelSelectActivity;
+import project.rew.iqgamequiz.mainactivities.play.questions.GivenReward;
+import project.rew.iqgamequiz.mainactivities.play.questions.QuestionsActivity;
+import project.rew.iqgamequiz.mainactivities.play.questions.RewardType;
 import project.rew.iqgamequiz.mainactivities.play.questions.items.Question;
 import project.rew.iqgamequiz.utils.FirebaseUtils;
 
@@ -38,12 +48,12 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
     List<CardView> cards;
     Dialog finish;
     Context context;
-    ImageView back, replay, img_double_change, img_swichq, img_cinzeci, img_corect;
+    ImageView back, replay, img_double_change, img_swichq, img_cinzeci, img_corect, profileImg, logoTitle;
     String categorie, categorieId, nivelId;
-    TextView coins, glory, dialog_coins, dialog_glory, tdouble_change, tswichq, tcinzeci, tcorect;
+    TextView coins, glory, dialog_coins, dialog_glory, tdouble_change, tswichq, tcinzeci, tcorect, titleRewardTV;
     boolean clicked = false, bdouble_change, bcorect = false, bcinzeci = false;
     int corecte, gresite;
-    CardView double_change, swichq, cinzeci, corect;
+    CardView double_change, swichq, cinzeci, corect, profileImgReward, titleReward;
     List<Integer> answersnr = new ArrayList<>();
 
     public QuestionAdapter(List<Question> questions, ViewPager2 viewPager,
@@ -100,6 +110,11 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
         replay = finish.findViewById(R.id.replay);
         dialog_coins = finish.findViewById(R.id.coins);
         dialog_glory = finish.findViewById(R.id.glory);
+        profileImgReward = finish.findViewById(R.id.cardView);
+        titleReward = finish.findViewById(R.id.title);
+        titleRewardTV = finish.findViewById(R.id.title_select);
+        profileImg = finish.findViewById(R.id.profile_img_select);
+        logoTitle = finish.findViewById(R.id.title_logo_select);
         back.setOnClickListener(v -> {
             goToBackActivity();
         });
@@ -307,6 +322,42 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
                             FirebaseUtils.setCorectAnswers(categorieId, nivelId, corecte);
                             dialog_coins.setText(String.valueOf(corecte * 2));
                             dialog_glory.setText(String.valueOf(corecte));
+                            FirebaseFirestore fstore = FirebaseFirestore.getInstance();
+                            fstore.collection("users").document(FirebaseUtils.email)
+                                    .collection("resolved").document(categorieId)
+                                    .get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                @Override
+                                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                    for (GivenReward givenReward : QuestionsActivity.givenRewards) {
+                                        if (!givenReward.isClaimed()) {
+                                            int curentPoints = 0;
+                                            if (documentSnapshot.exists() && documentSnapshot.get(nivelId) != null)
+                                                curentPoints = FirebaseUtils.getInt(String.valueOf(documentSnapshot.get(nivelId)));
+                                            if (curentPoints + corecte
+                                                    >= FirebaseUtils.getInt(givenReward.getPointsNedeed())) {
+                                                givenReward.setClaimed(true);
+                                                FirebaseUtils.setRewardClaimed(categorieId, nivelId, givenReward.getId());
+                                                if (givenReward.getRewardType() == RewardType.ProfileImage) {
+                                                    FirebaseUtils.addProfileImage(givenReward.getProfileImage().getId());
+                                                    profileImgReward.setVisibility(View.VISIBLE);
+                                                    Picasso.get().load(givenReward.getProfileImage().getImage())
+                                                            .into(profileImg);
+                                                }
+                                                if (givenReward.getRewardType() == RewardType.Title) {
+                                                    FirebaseUtils.addTitle(givenReward.getTitle().getId());
+                                                    titleReward.setVisibility(View.VISIBLE);
+                                                    Picasso.get().load(givenReward.getTitle().getLogo())
+                                                            .into(logoTitle);
+                                                    titleRewardTV.setText(givenReward.getTitle().getTitle());
+                                                    titleRewardTV.setTextColor(Color.parseColor(givenReward.getTitle().getColor()));
+                                                }
+                                            } else {
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
+                            });
                         }
                     }
                 }, 700);

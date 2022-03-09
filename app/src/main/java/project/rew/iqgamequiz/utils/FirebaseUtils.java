@@ -14,7 +14,9 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import project.rew.iqgamequiz.mainactivities.play.nivels.Nivel;
@@ -136,6 +138,105 @@ public class FirebaseUtils extends AppCompatActivity {
                         Map<String, Object> nivel = new HashMap<>();
                         nivel.put("id", id);
                         documentReference.set(nivel);
+                    }
+                }
+            }
+        });
+    }
+
+    public static void addProfileImage(String id) {
+        fstore = FirebaseFirestore.getInstance();
+        DocumentReference documentReference = fstore.collection("users").document(email)
+                .collection("images").document("images");
+        documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        if (document.get("id")!=null) {
+                            List<String> curently_images = ((List<String>) document.get("id"));
+                            curently_images.add(id);
+                            documentReference.update("id", curently_images);
+                        } else{
+                            List<String> curently_images=new ArrayList<>();
+                            curently_images.add(id);
+                            Map<String,Object> images_add=new HashMap<>();
+                            images_add.put("id",curently_images);
+                            documentReference.set(images_add);
+                        }
+                    } else {
+                        List<String> curently_images=new ArrayList<>();
+                        curently_images.add(id);
+                        Map<String,Object> images_add=new HashMap<>();
+                        images_add.put("id",curently_images);
+                        documentReference.set(images_add);
+                    }
+                }
+            }
+        });
+    }
+
+    public static void addTitle(String id) {
+        fstore = FirebaseFirestore.getInstance();
+        DocumentReference documentReference = fstore.collection("users").document(email)
+                .collection("titles").document("titles");
+        documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        if (document.get("id")!=null) {
+                            List<String> curently_titles = ((List<String>) document.get("id"));
+                            curently_titles.add(id);
+                            documentReference.update("id", curently_titles);
+                        } else{
+                            List<String> curently_titles=new ArrayList<>();
+                            curently_titles.add(id);
+                            Map<String,Object> titles_add=new HashMap<>();
+                            titles_add.put("id",curently_titles);
+                            documentReference.set(titles_add);
+                        }
+                    } else {
+                        List<String> curently_titles=new ArrayList<>();
+                        curently_titles.add(id);
+                        Map<String,Object> titles_add=new HashMap<>();
+                        titles_add.put("id",curently_titles);
+                        documentReference.set(titles_add);
+                    }
+                }
+            }
+        });
+    }
+
+    public static void setRewardClaimed(String categorie, String nivel, String id) {
+        fstore = FirebaseFirestore.getInstance();
+        DocumentReference documentReference = fstore.collection("users").document(email)
+                .collection("rewards_claimed").document(categorie);
+        documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        if (document.get(nivel)!=null) {
+                            List<String> rewards_completed = ((List<String>) document.get(nivel));
+                            rewards_completed.add(id);
+                            documentReference.update(nivel, rewards_completed);
+                        } else{
+                            List<String> rewards_completed=new ArrayList<>();
+                            rewards_completed.add(id);
+                            Map<String,Object> rewards_add=new HashMap<>();
+                            rewards_add.put(nivel,rewards_completed);
+                            documentReference.set(rewards_add);
+                        }
+                    } else {
+                        List<String> rewards_completed=new ArrayList<>();
+                        rewards_completed.add(id);
+                        Map<String,Object> rewards_add=new HashMap<>();
+                        rewards_add.put(nivel,rewards_completed);
+                        documentReference.set(rewards_add);
                     }
                 }
             }

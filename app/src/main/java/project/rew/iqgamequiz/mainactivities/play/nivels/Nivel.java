@@ -1,7 +1,14 @@
 package project.rew.iqgamequiz.mainactivities.play.nivels;
 
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
+import project.rew.iqgamequiz.mainactivities.play.questions.GivenReward;
+
 public class Nivel {
-    String title,image,curent,nedeed,id;
+    String title, image, curent, nedeed, id;
+    List<GivenReward> givenRewards;
 
     public Nivel(String id) {
         this.id = id;
@@ -45,5 +52,13 @@ public class Nivel {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public List<GivenReward> getGivenRewards() {
+        return givenRewards;
+    }
+
+    public void setGivenRewards(List<GivenReward> givenRewards) {
+        this.givenRewards = givenRewards;
     }
 }

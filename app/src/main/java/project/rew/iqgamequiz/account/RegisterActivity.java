@@ -116,11 +116,16 @@ public class RegisterActivity extends AppCompatActivity {
                                                     .collection("images").document("selected");
                                             DocumentReference documentReference2=fstore.collection("users").document(email)
                                                     .collection("images").document("images");
+                                            DocumentReference documentReference3=fstore.collection("users").document(email)
+                                                    .collection("titles").document("selected");
+                                            DocumentReference documentReference4=fstore.collection("users").document(email)
+                                                    .collection("titles").document("titles");
                                             Map<String, Object> user = new HashMap<>();
                                             user.put("username", userName);
                                             user.put("IqCoins", 0);
                                             user.put("glory", 0);
                                             Map<String,Object> selected=new HashMap<>();
+                                            Map<String,Object> selected_t=new HashMap<>();
                                             documentReference.set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
                                                 @Override
                                                 public void onSuccess(Void unused) {
@@ -128,7 +133,14 @@ public class RegisterActivity extends AppCompatActivity {
                                                 }
                                             });
                                             selected.put("id","0");
+                                            selected_t.put("id","0");
                                             documentReference1.set(selected).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void unused) {
+
+                                                }
+                                            });
+                                            documentReference3.set(selected_t).addOnSuccessListener(new OnSuccessListener<Void>() {
                                                 @Override
                                                 public void onSuccess(Void unused) {
 
@@ -138,7 +150,17 @@ public class RegisterActivity extends AppCompatActivity {
                                             List<String> ids=new ArrayList<>();
                                             ids.add("0");
                                             images.put("id",ids);
+                                            Map<String,Object> titles=new HashMap<>();
+                                            List<String> ids_t=new ArrayList<>();
+                                            ids_t.add("0");
+                                            titles.put("id",ids_t);
                                             documentReference2.set(images).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void unused) {
+
+                                                }
+                                            });
+                                            documentReference4.set(titles).addOnSuccessListener(new OnSuccessListener<Void>() {
                                                 @Override
                                                 public void onSuccess(Void unused) {
 

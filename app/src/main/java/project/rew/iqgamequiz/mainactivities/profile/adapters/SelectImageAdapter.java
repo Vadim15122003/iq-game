@@ -1,4 +1,4 @@
-package project.rew.iqgamequiz;
+package project.rew.iqgamequiz.mainactivities.profile.adapters;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +12,8 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
+import project.rew.iqgamequiz.R;
+import project.rew.iqgamequiz.mainactivities.profile.items.ProfileImage;
 import project.rew.iqgamequiz.utils.FirebaseUtils;
 
 public class SelectImageAdapter extends RecyclerView.Adapter<SelectImageAdapter.ViewHolder> {

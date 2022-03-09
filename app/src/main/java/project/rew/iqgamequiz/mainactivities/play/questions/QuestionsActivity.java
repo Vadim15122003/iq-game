@@ -48,6 +48,7 @@ public class QuestionsActivity extends AppCompatActivity {
     ImageView pause, resume, restart, exit, e_yes, e_no, r_yes, r_no, img_double_change, img_swichq, img_cinzeci, img_corect;
     Dialog d_pause, d_exit, d_restart;
     Window w_pause, w_exit, w_restart;
+    public static List<GivenReward> givenRewards;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +59,6 @@ public class QuestionsActivity extends AppCompatActivity {
         categorie = getIntent().getStringExtra("categorie");
         categorieId = getIntent().getStringExtra("categorieId");
         int nivel = getIntent().getIntExtra("nivel", 0);
-        textView = findViewById(R.id.text);
         coins = findViewById(R.id.iq_coins);
         glory = findViewById(R.id.glory);
         c1 = findViewById(R.id.c1);

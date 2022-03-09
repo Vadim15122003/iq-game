@@ -3,6 +3,8 @@ package project.rew.iqgamequiz.mainactivities.play.nivels;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,17 +18,24 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import project.rew.iqgamequiz.R;
-import project.rew.iqgamequiz.mainactivities.play.questions.items.GivenReward;
+import project.rew.iqgamequiz.mainactivities.play.questions.GivenReward;
 import project.rew.iqgamequiz.mainactivities.play.questions.QuestionsActivity;
-import project.rew.iqgamequiz.mainactivities.play.questions.adapters.RewardsAdapter;
+import project.rew.iqgamequiz.mainactivities.play.questions.RewardsAdapter;
+import project.rew.iqgamequiz.utils.FirebaseUtils;
 
 public class NivelSelectSlideAdapter extends RecyclerView.Adapter<NivelSelectSlideAdapter.ViewHolder> {
 
@@ -36,17 +45,16 @@ public class NivelSelectSlideAdapter extends RecyclerView.Adapter<NivelSelectSli
     Context context;
     String categorieId;
     Dialog neddsMore, details;
-    ImageView image_ok, details_ok;
+    ImageView image_ok;
     RecyclerView recyclerView;
     RewardsAdapter adapter;
-    List<GivenReward> givenRewards = new ArrayList<>();
 
     public NivelSelectSlideAdapter(List<Nivel> nivels, String categorie, String categorieId, Context context) {
         this.nivels = nivels;
         this.categorie = categorie;
         this.context = context;
         this.categorieId = categorieId;
-        ref = FirebaseDatabase.getInstance().getReference().child("RO").child(categorie);
+        ref = FirebaseDatabase.getInstance().getReference().child("RO").child("Categories").child(categorie);
     }
 
     @NonNull
@@ -72,21 +80,10 @@ public class NivelSelectSlideAdapter extends RecyclerView.Adapter<NivelSelectSli
         WindowManager.LayoutParams lp1 = details.getWindow().getAttributes();
         lp1.dimAmount = 0.8f;
         details.getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
-        details_ok = details.findViewById(R.id.imageView8);
         recyclerView = details.findViewById(R.id.recyclerview);
-        givenRewards.add(new GivenReward("Beginer", null, "40"));
-        givenRewards.add(new GivenReward("Erou", null, "569"));
-        givenRewards.add(new GivenReward("Legenda", null, "35"));
-        givenRewards.add(new GivenReward("Armn", null, "89"));
-        givenRewards.add(new GivenReward("Inteleotul", null, "354"));
-        givenRewards.add(new GivenReward("Inginer", null, "123"));
-        givenRewards.add(new GivenReward("Expert", null, "145"));
-        adapter = new RewardsAdapter(givenRewards);
-        recyclerView.setAdapter(adapter);
+
+
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
-        details_ok.setOnClickListener(v -> {
-            details.cancel();
-        });
         return new ViewHolder(view);
     }
 
@@ -110,6 +107,14 @@ public class NivelSelectSlideAdapter extends RecyclerView.Adapter<NivelSelectSli
                     intent.putExtra("categorie", categorie);
                     intent.putExtra("categorieId", categorieId);
                     intent.putExtra("nivel", position);
+                    if (holderNivel.getGivenRewards() != null)
+                        Collections.sort(holderNivel.getGivenRewards(), new Comparator<GivenReward>() {
+                            @Override
+                            public int compare(GivenReward givenReward, GivenReward t1) {
+                                return FirebaseUtils.getInt(givenReward.getPointsNedeed()) - FirebaseUtils.getInt(t1.getPointsNedeed());
+                            }
+                        });
+                    QuestionsActivity.givenRewards = holderNivel.getGivenRewards();
                     context.startActivity(intent);
                 });
             }
@@ -119,8 +124,11 @@ public class NivelSelectSlideAdapter extends RecyclerView.Adapter<NivelSelectSli
         });
 
         holder.details.setOnClickListener(v -> {
+            adapter = new RewardsAdapter(holderNivel.getGivenRewards());
+            recyclerView.setAdapter(adapter);
             details.show();
         });
+
     }
 
     @Override

@@ -1,4 +1,4 @@
-package project.rew.iqgamequiz.mainactivities;
+package project.rew.iqgamequiz.mainactivities.profile;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,40 +20,30 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import project.rew.iqgamequiz.MainActivity;
-import project.rew.iqgamequiz.ProfileImage;
-import project.rew.iqgamequiz.Question;
 import project.rew.iqgamequiz.R;
-import project.rew.iqgamequiz.RegisterActivity;
-import project.rew.iqgamequiz.SelectImageAdapter;
-import project.rew.iqgamequiz.SelectTitleAdapter;
-import project.rew.iqgamequiz.Title;
+import project.rew.iqgamequiz.mainactivities.profile.items.ProfileImage;
+import project.rew.iqgamequiz.mainactivities.profile.adapters.SelectImageAdapter;
+import project.rew.iqgamequiz.mainactivities.profile.adapters.SelectTitleAdapter;
+import project.rew.iqgamequiz.mainactivities.profile.items.Title;
 import project.rew.iqgamequiz.utils.FirebaseUtils;
 
-import static project.rew.iqgamequiz.LoginActivity.mAuth;
-
-public class Profile extends AppCompatActivity {
+public class ProfileActivity extends AppCompatActivity {
 
     TextView coins, glory, username, title, title_select;
     ImageView profile_img, profile_img_select, title_logo, title_image, title_logo_select;
@@ -96,7 +86,7 @@ public class Profile extends AppCompatActivity {
         ref = FirebaseDatabase.getInstance().getReference().child("RO");
         progressDialog = new ProgressDialog(this);
 
-        selectTitle = new Dialog(Profile.this, R.style.DialogTransparentBg);
+        selectTitle = new Dialog(ProfileActivity.this, R.style.DialogTransparentBg);
         selectTitle.setContentView(R.layout.dialog_select_title);
         selectTitle.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         selectTitle.setCancelable(true);
@@ -105,7 +95,7 @@ public class Profile extends AppCompatActivity {
         selectTitle.getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
         recyclerViewT = selectTitle.findViewById(R.id.recyclerview);
 
-        selectProfileImage = new Dialog(Profile.this, R.style.DialogTransparentBg);
+        selectProfileImage = new Dialog(ProfileActivity.this, R.style.DialogTransparentBg);
         selectProfileImage.setContentView(R.layout.dialog_select_profile_image);
         selectProfileImage.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         selectProfileImage.setCancelable(true);
@@ -243,7 +233,7 @@ public class Profile extends AppCompatActivity {
                                         @Override
                                         public void onFailure(@NonNull Exception e) {
                                             progressDialog.dismiss();
-                                            Toast.makeText(Profile.this, e.getMessage().toString(), Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(ProfileActivity.this, e.getMessage().toString(), Toast.LENGTH_SHORT).show();
                                         }
                                     });
                                 }
@@ -253,7 +243,7 @@ public class Profile extends AppCompatActivity {
                         @Override
                         public void onFailure(@NonNull Exception e) {
                             progressDialog.dismiss();
-                            Toast.makeText(Profile.this, "" + e.getMessage(), Toast.LENGTH_LONG).show();
+                            Toast.makeText(ProfileActivity.this, "" + e.getMessage(), Toast.LENGTH_LONG).show();
                         }
                     });
                 }
@@ -266,7 +256,7 @@ public class Profile extends AppCompatActivity {
 
         @Override
         public void onBackPressed () {
-            Intent intent = new Intent(Profile.this, MainActivity.class);
+            Intent intent = new Intent(ProfileActivity.this, MainActivity.class);
             startActivity(intent);
         }
     }
