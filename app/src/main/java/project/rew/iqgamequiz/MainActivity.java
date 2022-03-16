@@ -29,7 +29,7 @@ import project.rew.iqgamequiz.mainactivities.friends.Friends;
 import project.rew.iqgamequiz.mainactivities.profile.ProfileActivity;
 import project.rew.iqgamequiz.mainactivities.settings.Settings;
 import project.rew.iqgamequiz.mainactivities.topglory.TopGlory;
-import project.rew.iqgamequiz.mainactivities.play.SelectGeneralKnowlage;
+import project.rew.iqgamequiz.mainactivities.play.general_knowlage.SelectGeneralKnowlage;
 import project.rew.iqgamequiz.mainactivities.profile.items.ProfileImage;
 import project.rew.iqgamequiz.utils.FirebaseUtils;
 

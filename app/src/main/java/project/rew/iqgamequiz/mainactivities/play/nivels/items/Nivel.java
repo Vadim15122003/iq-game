@@ -1,14 +1,13 @@
-package project.rew.iqgamequiz.mainactivities.play.nivels;
+package project.rew.iqgamequiz.mainactivities.play.nivels.items;
 
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
-import project.rew.iqgamequiz.mainactivities.play.questions.GivenReward;
+import project.rew.iqgamequiz.mainactivities.play.questions.items.NivelAtributes;
 
 public class Nivel {
-    String title, image, curent, nedeed, id;
+    String title, image, curent, nedeed, id, curentOfThis;
     List<GivenReward> givenRewards;
+    NivelAtributes nivelAtributes;
 
     public Nivel(String id) {
         this.id = id;
@@ -60,5 +59,21 @@ public class Nivel {
 
     public void setGivenRewards(List<GivenReward> givenRewards) {
         this.givenRewards = givenRewards;
+    }
+
+    public NivelAtributes getNivelAtributes() {
+        return nivelAtributes;
+    }
+
+    public void setNivelAtributes(NivelAtributes nivelAtributes) {
+        this.nivelAtributes = nivelAtributes;
+    }
+
+    public String getCurentOfThis() {
+        return curentOfThis;
+    }
+
+    public void setCurentOfThis(String curentOfThis) {
+        this.curentOfThis = curentOfThis;
     }
 }

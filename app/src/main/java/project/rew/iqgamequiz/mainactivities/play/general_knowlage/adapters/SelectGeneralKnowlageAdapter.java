@@ -1,5 +1,8 @@
-package project.rew.iqgamequiz.mainactivities.play.notused;
+package project.rew.iqgamequiz.mainactivities.play.general_knowlage.adapters;
 
+import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,25 +13,22 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
 import project.rew.iqgamequiz.R;
+import project.rew.iqgamequiz.mainactivities.play.general_knowlage.items.KnewCategorie;
+import project.rew.iqgamequiz.mainactivities.play.nivels.NivelSelectActivity;
 
 public class SelectGeneralKnowlageAdapter extends RecyclerView.Adapter<SelectGeneralKnowlageAdapter.ViewHolder> {
 
-    List<String> categories;
-    DatabaseReference databaseReference;
+    List<KnewCategorie> categories;
+    Context context;
 
-    public SelectGeneralKnowlageAdapter(List<String> categories) {
+    public SelectGeneralKnowlageAdapter(List<KnewCategorie> categories, Context context) {
         this.categories = categories;
-        databaseReference = FirebaseDatabase.getInstance().getReference().child("Categories");
+        this.context = context;
     }
 
     @NonNull
@@ -40,28 +40,20 @@ public class SelectGeneralKnowlageAdapter extends RecyclerView.Adapter<SelectGen
 
     @Override
     public void onBindViewHolder(@NonNull SelectGeneralKnowlageAdapter.ViewHolder holder, int position) {
-        databaseReference.child(categories.get(position)).child("title").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DataSnapshot> task) {
-                if (task.isSuccessful()) {
-                    holder.title.setText(String.valueOf(task.getResult().getValue()));
-                }
-            }
-        });
-        databaseReference.child(categories.get(position)).child("image").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DataSnapshot> task) {
-                if (task.isSuccessful()) {
-                    Picasso.get().load(String.valueOf(task.getResult().getValue())).into(holder.image);
-                }
-            }
-        });
+        KnewCategorie knewCategorie = categories.get(position);
         holder.view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Intent intent = new Intent(context, NivelSelectActivity.class);
+                Bundle bundle=new Bundle();
+                bundle.putString("categorie", knewCategorie.getTitle());
+                bundle.putParcelable("general_atributes",knewCategorie.getGeneral_atributes());
+                intent.putExtra("Bundles",bundle);
+                context.startActivity(intent);
             }
         });
+        holder.title.setText(knewCategorie.getTitle());
+        Picasso.get().load(knewCategorie.getImage()).into(holder.image);
     }
 
     @Override

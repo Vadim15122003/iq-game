@@ -79,13 +79,14 @@
         android:id="@+id/details"
         android:layout_width="100dp"
         android:layout_height="wrap_content"
-        app:cardCornerRadius="10dp"
+        app:cardCornerRadius="5dp"
         app:cardBackgroundColor="#E6BED6EA"
         android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toBottomOf="@+id/image"
         app:layout_constraintEnd_toEndOf="@+id/image"
         app:layout_constraintStart_toStartOf="@+id/image">
         <TextView
+            android:id="@+id/txt_details"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:text="Detalii"

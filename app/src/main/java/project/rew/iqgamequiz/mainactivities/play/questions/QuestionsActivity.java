@@ -3,10 +3,15 @@ package project.rew.iqgamequiz.mainactivities.play.questions;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
@@ -21,6 +26,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -29,9 +36,12 @@ import java.util.List;
 import java.util.Map;
 
 import project.rew.iqgamequiz.R;
+import project.rew.iqgamequiz.mainactivities.play.general_knowlage.items.GeneralAtributes;
+import project.rew.iqgamequiz.mainactivities.play.nivels.items.GivenReward;
 import project.rew.iqgamequiz.mainactivities.play.nivels.NivelSelectActivity;
 import project.rew.iqgamequiz.mainactivities.play.questions.adapters.QuestionAdapter;
 import project.rew.iqgamequiz.mainactivities.play.questions.items.Answer;
+import project.rew.iqgamequiz.mainactivities.play.questions.items.NivelAtributes;
 import project.rew.iqgamequiz.mainactivities.play.questions.items.Question;
 import project.rew.iqgamequiz.utils.FirebaseUtils;
 
@@ -41,14 +51,18 @@ public class QuestionsActivity extends AppCompatActivity {
     String categorie, categorieId;
     ViewPager2 viewPager;
     QuestionAdapter adapter;
-    TextView textView, coins, glory, tdouble_change, tswichq, tcinzeci, tcorect;
+    TextView textView, coins, glory, tdouble_change, tswichq, tcinzeci, tcorect, txt_exit, txt_restart;
     List<Question> questions = new ArrayList<>();
     CardView c1, c2, c3, c4, c5, c6, c7, c8, c9, c10, double_change, swichq, cinzeci, corect;
     List<CardView> cards = new ArrayList<>();
-    ImageView pause, resume, restart, exit, e_yes, e_no, r_yes, r_no, img_double_change, img_swichq, img_cinzeci, img_corect;
+    ImageView pause, resume, restart, exit, e_yes, e_no, r_yes, r_no, img_double_change, img_swichq,
+            img_cinzeci, img_corect, dialog_exit_img, dialog_restart_img, dialog_pause_img;
     Dialog d_pause, d_exit, d_restart;
     Window w_pause, w_exit, w_restart;
     public static List<GivenReward> givenRewards;
+    GeneralAtributes generalAtributes;
+    NivelAtributes nivelAtributes;
+    ConstraintLayout questionLay;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,11 +70,15 @@ public class QuestionsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_question);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         viewPager = findViewById(R.id.viewpager);
-        categorie = getIntent().getStringExtra("categorie");
-        categorieId = getIntent().getStringExtra("categorieId");
-        int nivel = getIntent().getIntExtra("nivel", 0);
+        Bundle bundle = getIntent().getBundleExtra("Bundles");
+        categorie = bundle.getString("categorie");
+        generalAtributes = bundle.getParcelable("general_atributes");
+        nivelAtributes = bundle.getParcelable("nivel_atributes");
+        categorieId = bundle.getString("categorieId");
+        int nivel = bundle.getInt("nivel", 0);
         coins = findViewById(R.id.iq_coins);
         glory = findViewById(R.id.glory);
+        questionLay = findViewById(R.id.questonLay);
         c1 = findViewById(R.id.c1);
         c2 = findViewById(R.id.c2);
         c3 = findViewById(R.id.c3);
@@ -114,6 +132,9 @@ public class QuestionsActivity extends AppCompatActivity {
         w_pause.getAttributes().windowAnimations = R.style.DiaolgPAUSE;
         w_exit.getAttributes().windowAnimations = R.style.DialogAnimation;
         w_restart.getAttributes().windowAnimations = R.style.DialogAnimation;
+        dialog_exit_img = d_exit.findViewById(R.id.imageExit);
+        dialog_restart_img = d_restart.findViewById(R.id.imageRestart);
+        dialog_pause_img = d_pause.findViewById(R.id.pause_bckg_img);
         resume = d_pause.findViewById(R.id.resume);
         restart = d_pause.findViewById(R.id.restart);
         exit = d_pause.findViewById(R.id.exit);
@@ -121,6 +142,8 @@ public class QuestionsActivity extends AppCompatActivity {
         e_no = d_exit.findViewById(R.id.no);
         r_yes = d_restart.findViewById(R.id.yes);
         r_no = d_restart.findViewById(R.id.no);
+        txt_exit = d_exit.findViewById(R.id.txt_exit);
+        txt_restart = d_restart.findViewById(R.id.txt_restart);
 
         cards.add(c1);
         cards.add(c2);
@@ -135,6 +158,46 @@ public class QuestionsActivity extends AppCompatActivity {
 
         glory.setText(FirebaseUtils.glory);
         coins.setText(FirebaseUtils.coins);
+
+        if (nivelAtributes != null) {
+            loadBackground();
+            if (nivelAtributes.getDouble_change_selected() != null)
+                Picasso.get().load(nivelAtributes.getDouble_change_selected()).into(img_double_change);
+            if (nivelAtributes.getSwich_selected_img() != null)
+                Picasso.get().load(nivelAtributes.getSwich_selected_img()).into(img_swichq);
+            if (nivelAtributes.getCorect_selected() != null)
+                Picasso.get().load(nivelAtributes.getCorect_selected()).into(img_corect);
+            if (nivelAtributes.getCinzeci_selected() != null)
+                Picasso.get().load(nivelAtributes.getCinzeci_selected()).into(img_cinzeci);
+            if (nivelAtributes.getDialog_exit_img() != null) {
+                Picasso.get().load(nivelAtributes.getDialog_exit_img()).into(dialog_exit_img);
+                dialog_exit_img.setAdjustViewBounds(true);
+            }
+            if (nivelAtributes.getDialog_exit_no() != null)
+                Picasso.get().load(nivelAtributes.getDialog_exit_no()).into(e_no);
+            if (nivelAtributes.getDialog_exit_yes() != null)
+                Picasso.get().load(nivelAtributes.getDialog_exit_yes()).into(e_yes);
+            if (nivelAtributes.getDialog_exit_txt_color() != null)
+                txt_exit.setTextColor(Color.parseColor(nivelAtributes.getDialog_exit_txt_color()));
+            if (nivelAtributes.getDialog_restart_img() != null) {
+                Picasso.get().load(nivelAtributes.getDialog_restart_img()).into(dialog_restart_img);
+                dialog_restart_img.setAdjustViewBounds(true);
+            }
+            if (nivelAtributes.getDialog_restart_no() != null)
+                Picasso.get().load(nivelAtributes.getDialog_restart_no()).into(r_no);
+            if (nivelAtributes.getDialog_restart_yes() != null)
+                Picasso.get().load(nivelAtributes.getDialog_restart_yes()).into(r_yes);
+            if (nivelAtributes.getDialog_restart_txt_color() != null)
+                txt_restart.setTextColor(Color.parseColor(nivelAtributes.getDialog_restart_txt_color()));
+            if (nivelAtributes.getExit_btn() != null)
+                Picasso.get().load(nivelAtributes.getExit_btn()).into(exit);
+            if (nivelAtributes.getPause_btn() != null)
+                Picasso.get().load(nivelAtributes.getPause_btn()).into(pause);
+            if (nivelAtributes.getPause_dialog_img() != null) {
+                Picasso.get().load(nivelAtributes.getPause_dialog_img()).into(dialog_pause_img);
+                dialog_pause_img.setAdjustViewBounds(true);
+            }
+        }
 
         ref = FirebaseDatabase.getInstance().getReference().child("RO").child("Categories").child(categorie).child("nivels").child(String.valueOf(nivel)).child("questions");
 
@@ -165,7 +228,7 @@ public class QuestionsActivity extends AppCompatActivity {
                 adapter = new QuestionAdapter(questions, viewPager, cards, QuestionsActivity.this,
                         categorie, categorieId, String.valueOf(nivel), coins, glory, double_change, swichq, cinzeci, corect,
                         img_double_change, img_swichq, img_cinzeci, img_corect,
-                        tdouble_change, tswichq, tcinzeci, tcorect);
+                        tdouble_change, tswichq, tcinzeci, tcorect, generalAtributes, nivelAtributes);
                 viewPager.setAdapter(adapter);
             }
 
@@ -199,7 +262,10 @@ public class QuestionsActivity extends AppCompatActivity {
         });
         e_yes.setOnClickListener(v -> {
             Intent intent = new Intent(QuestionsActivity.this, NivelSelectActivity.class);
-            intent.putExtra("categorie", categorie);
+            Bundle bundle = new Bundle();
+            bundle.putString("categorie", categorie);
+            bundle.putParcelable("general_atributes", generalAtributes);
+            intent.putExtra("Bundles", bundle);
             startActivity(intent);
             finish();
         });
@@ -208,6 +274,7 @@ public class QuestionsActivity extends AppCompatActivity {
         });
         r_yes.setOnClickListener(v -> {
             recreate();
+            viewPager.setCurrentItem(0);
         });
         r_no.setOnClickListener(v -> {
             d_restart.cancel();
@@ -217,5 +284,25 @@ public class QuestionsActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
 
+    }
+
+    void loadBackground() {
+        if (nivelAtributes.getQuestion_bckg() != null)
+            Picasso.get().load(nivelAtributes.getQuestion_bckg()).into(new Target() {
+                @Override
+                public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                    questionLay.setBackground(new BitmapDrawable(bitmap));
+                }
+
+                @Override
+                public void onBitmapFailed(Exception e, Drawable errorDrawable) {
+                    loadBackground();
+                }
+
+                @Override
+                public void onPrepareLoad(Drawable placeHolderDrawable) {
+
+                }
+            });
     }
 }

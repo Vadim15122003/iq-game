@@ -19,7 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import project.rew.iqgamequiz.mainactivities.play.nivels.Nivel;
+import project.rew.iqgamequiz.mainactivities.play.nivels.items.Nivel;
 import project.rew.iqgamequiz.mainactivities.profile.items.ProfileImage;
 import project.rew.iqgamequiz.mainactivities.profile.items.Title;
 
@@ -156,6 +156,15 @@ public class FirebaseUtils extends AppCompatActivity {
                     if (document.exists()) {
                         if (document.get("id")!=null) {
                             List<String> curently_images = ((List<String>) document.get("id"));
+                            boolean exist = false;
+                            if (curently_images != null) {
+                                for(String id_i:curently_images)
+                                    if (id_i.equals(id)) {
+                                        exist = true;
+                                        break;
+                                    }
+                            }
+                            if(!exist)
                             curently_images.add(id);
                             documentReference.update("id", curently_images);
                         } else{
@@ -189,6 +198,15 @@ public class FirebaseUtils extends AppCompatActivity {
                     if (document.exists()) {
                         if (document.get("id")!=null) {
                             List<String> curently_titles = ((List<String>) document.get("id"));
+                            boolean exist = false;
+                            if (curently_titles != null) {
+                                for(String id_t:curently_titles)
+                                    if (id_t.equals(id)) {
+                                        exist = true;
+                                        break;
+                                    }
+                            }
+                            if(!exist)
                             curently_titles.add(id);
                             documentReference.update("id", curently_titles);
                         } else{

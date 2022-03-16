@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".mainactivities.play.SelectGeneralKnowlage"
+    tools:context=".mainactivities.play.general_knowlage.SelectGeneralKnowlage"
     android:background="@drawable/background_select_knowlage">
     
     <androidx.recyclerview.widget.RecyclerView

@@ -1,5 +1,6 @@
-package project.rew.iqgamequiz.mainactivities.play.questions;
+package project.rew.iqgamequiz.mainactivities.play.nivels.items;
 
+import project.rew.iqgamequiz.mainactivities.play.nivels.enums.RewardType;
 import project.rew.iqgamequiz.mainactivities.profile.items.ProfileImage;
 import project.rew.iqgamequiz.mainactivities.profile.items.Title;
 

@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Bundle;
 import android.os.Handler;
 import android.transition.TransitionManager;
 import android.view.LayoutInflater;
@@ -20,13 +21,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
 
-import com.google.android.gms.tasks.OnCanceledListener;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.storage.FirebaseStorage;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -34,10 +31,12 @@ import java.util.Collections;
 import java.util.List;
 
 import project.rew.iqgamequiz.R;
+import project.rew.iqgamequiz.mainactivities.play.general_knowlage.items.GeneralAtributes;
 import project.rew.iqgamequiz.mainactivities.play.nivels.NivelSelectActivity;
-import project.rew.iqgamequiz.mainactivities.play.questions.GivenReward;
+import project.rew.iqgamequiz.mainactivities.play.nivels.items.GivenReward;
 import project.rew.iqgamequiz.mainactivities.play.questions.QuestionsActivity;
-import project.rew.iqgamequiz.mainactivities.play.questions.RewardType;
+import project.rew.iqgamequiz.mainactivities.play.nivels.enums.RewardType;
+import project.rew.iqgamequiz.mainactivities.play.questions.items.NivelAtributes;
 import project.rew.iqgamequiz.mainactivities.play.questions.items.Question;
 import project.rew.iqgamequiz.utils.FirebaseUtils;
 
@@ -51,10 +50,12 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
     ImageView back, replay, img_double_change, img_swichq, img_cinzeci, img_corect, profileImg, logoTitle;
     String categorie, categorieId, nivelId;
     TextView coins, glory, dialog_coins, dialog_glory, tdouble_change, tswichq, tcinzeci, tcorect, titleRewardTV;
-    boolean clicked = false, bdouble_change, bcorect = false, bcinzeci = false;
+    boolean clicked = false, bdouble_change = false, bcorect = false, bcinzeci = false,bswich = false;
     int corecte, gresite;
-    CardView double_change, swichq, cinzeci, corect, profileImgReward, titleReward;
+    CardView double_change, swichq, cinzeci, corect, profileImgReward, titleReward, finish_bckg;
     List<Integer> answersnr = new ArrayList<>();
+    GeneralAtributes generalAtributes;
+    NivelAtributes nivelAtributes;
 
     public QuestionAdapter(List<Question> questions, ViewPager2 viewPager,
                            List<CardView> cards, Context context, String categorie,
@@ -63,7 +64,8 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
                            CardView swichq, CardView cinzeci, CardView corect,
                            ImageView img_double_change, ImageView img_swichq,
                            ImageView img_cinzeci, ImageView img_corect, TextView tdouble_change,
-                           TextView tswichq, TextView tcinzeci, TextView tcorect) {
+                           TextView tswichq, TextView tcinzeci, TextView tcorect,
+                           GeneralAtributes generalAtributes, NivelAtributes nivelAtributes) {
         this.questions = questions;
         this.viewPager = viewPager;
         this.cards = cards;
@@ -85,6 +87,8 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
         this.tswichq = tswichq;
         this.tcinzeci = tcinzeci;
         this.tcorect = tcorect;
+        this.generalAtributes = generalAtributes;
+        this.nivelAtributes = nivelAtributes;
         corecte = 0;
         gresite = 0;
         answersnr.add(1);
@@ -115,6 +119,39 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
         titleRewardTV = finish.findViewById(R.id.title_select);
         profileImg = finish.findViewById(R.id.profile_img_select);
         logoTitle = finish.findViewById(R.id.title_logo_select);
+        finish_bckg = finish.findViewById(R.id.finishBackground);
+
+        if (nivelAtributes.getBack_btn() != null)
+            Picasso.get().load(nivelAtributes.getBack_btn()).into(back);
+        if (nivelAtributes.getCinzeci_img() != null)
+            Picasso.get().load(nivelAtributes.getCinzeci_img()).into(img_cinzeci);
+        if (nivelAtributes.getSwich_img() != null)
+            Picasso.get().load(nivelAtributes.getSwich_img()).into(img_swichq);
+        if (nivelAtributes.getCorect_img() != null)
+            Picasso.get().load(nivelAtributes.getCorect_img()).into(img_corect);
+        if (nivelAtributes.getDouble_change_img() != null)
+            Picasso.get().load(nivelAtributes.getDouble_change_img()).into(img_double_change);
+        if (nivelAtributes.getCinzeci_price() != null)
+            tcinzeci.setText(nivelAtributes.getCinzeci_price());
+        if (nivelAtributes.getDouble_change_price() != null)
+            tdouble_change.setText(nivelAtributes.getDouble_change_price());
+        if (nivelAtributes.getSwich_price() != null)
+            tswichq.setText(nivelAtributes.getSwich_price());
+        if (nivelAtributes.getCorect_price() != null)
+            tcorect.setText(nivelAtributes.getCorect_price());
+        if (nivelAtributes.getOptions_txt_price_color() != null) {
+            tcinzeci.setTextColor(Color.parseColor(nivelAtributes.getOptions_txt_price_color()));
+            tcorect.setTextColor(Color.parseColor(nivelAtributes.getOptions_txt_price_color()));
+            tdouble_change.setTextColor(Color.parseColor(nivelAtributes.getOptions_txt_price_color()));
+            tswichq.setTextColor(Color.parseColor(nivelAtributes.getOptions_txt_price_color()));
+        }
+        if (nivelAtributes.getFinish_bckg_color() != null)
+            finish_bckg.setCardBackgroundColor(Color.parseColor(nivelAtributes.getFinish_bckg_color()));
+        if (nivelAtributes.getFinish_text_color() != null) {
+            dialog_coins.setTextColor(Color.parseColor(nivelAtributes.getFinish_text_color()));
+            dialog_glory.setTextColor(Color.parseColor(nivelAtributes.getFinish_text_color()));
+        }
+
         back.setOnClickListener(v -> {
             goToBackActivity();
         });
@@ -138,15 +175,18 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
         holder.t3.setText(cureentQuestion.getAnsewrs().get(2).getAnswer());
         holder.t4.setText(cureentQuestion.getAnsewrs().get(3).getAnswer());
         holder.double_change.setOnClickListener(v -> {
-            if (img_double_change.getDrawable().getConstantState() != context.getResources().getDrawable(R.drawable.clicked_double_change).getConstantState()) {
-                img_double_change.setImageResource(R.drawable.clicked_double_change);
+            if (!bdouble_change) {
+                if (nivelAtributes.getDouble_change_selected() != null)
+                    Picasso.get().load(nivelAtributes.getDouble_change_selected()).into(img_double_change);
                 FirebaseUtils.addCoins(FirebaseUtils.getInt(FirebaseUtils.coins) - FirebaseUtils.getInt(String.valueOf(tdouble_change.getText())), coins);
                 bdouble_change = true;
             }
         });
         holder.swichq.setOnClickListener(v -> {
-            if (img_swichq.getDrawable().getConstantState() != context.getResources().getDrawable(R.drawable.clicked_swichq).getConstantState()) {
-                img_swichq.setImageResource(R.drawable.clicked_swichq);
+            if (!bswich) {
+                bswich=true;
+                if (nivelAtributes.getSwich_selected_img() != null)
+                    Picasso.get().load(nivelAtributes.getSwich_selected_img()).into(img_swichq);
                 clicked = true;
                 FirebaseUtils.addCoins(FirebaseUtils.getInt(FirebaseUtils.coins) - FirebaseUtils.getInt(String.valueOf(tswichq.getText())), coins);
                 questions.add(questions.get(viewPager.getCurrentItem()));
@@ -199,8 +239,9 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
             }
         });
         holder.corect.setOnClickListener(v -> {
-            if (img_corect.getDrawable().getConstantState() != context.getResources().getDrawable(R.drawable.clicked_corect).getConstantState() && !bcinzeci) {
-                img_corect.setImageResource(R.drawable.clicked_corect);
+            if (!bcorect && !bcinzeci) {
+                if (nivelAtributes.getCorect_selected() != null)
+                    Picasso.get().load(nivelAtributes.getCorect_selected()).into(img_corect);
                 bcorect = true;
                 FirebaseUtils.addCoins(FirebaseUtils.getInt(FirebaseUtils.coins) - FirebaseUtils.getInt(String.valueOf(tcorect.getText())), coins);
                 TransitionManager.beginDelayedTransition(holder.viewGroup);
@@ -223,8 +264,9 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
             }
         });
         holder.cinzeci.setOnClickListener(v -> {
-            if (img_cinzeci.getDrawable().getConstantState() != context.getResources().getDrawable(R.drawable.clicked_cinzeci).getConstantState() && !bcorect) {
-                img_cinzeci.setImageResource(R.drawable.clicked_cinzeci);
+            if (!bcinzeci && !bcorect) {
+                if (nivelAtributes.getCinzeci_selected() != null)
+                    Picasso.get().load(nivelAtributes.getCinzeci_selected()).into(img_cinzeci);
                 FirebaseUtils.addCoins(FirebaseUtils.getInt(FirebaseUtils.coins) - FirebaseUtils.getInt(String.valueOf(tcinzeci.getText())), coins);
                 bcinzeci = true;
                 Collections.shuffle(answersnr);
@@ -292,7 +334,7 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
                 }
             }
 
-            if (gresite == 3) {
+            if (gresite > FirebaseUtils.getInt(nivelAtributes.getIncorect_permision())) {
                 finish.show();
                 dialog_coins.setText("0");
                 dialog_glory.setText("0");
@@ -303,11 +345,16 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
                     public void run() {
                         v.setVisibility(View.GONE);
                         r.setVisibility(View.GONE);
-                        img_corect.setImageResource(R.drawable.corect);
-                        img_double_change.setImageResource(R.drawable.doublechange);
-                        img_cinzeci.setImageResource(R.drawable.cinzeci);
-                        img_swichq.setImageResource(R.drawable.reload);
+                        if (nivelAtributes.getCinzeci_img() != null)
+                            Picasso.get().load(nivelAtributes.getCinzeci_img()).into(img_cinzeci);
+                        if (nivelAtributes.getCorect_img() != null)
+                            Picasso.get().load(nivelAtributes.getCorect_img()).into(img_corect);
+                        if (nivelAtributes.getSwich_img() != null)
+                            Picasso.get().load(nivelAtributes.getSwich_img()).into(img_swichq);
+                        if (nivelAtributes.getDouble_change_img() != null)
+                            Picasso.get().load(nivelAtributes.getDouble_change_img()).into(img_double_change);
                         bdouble_change = false;
+                        bswich=false;
                         viewPager.setCurrentItem(position + 1);
                         if (bcorect || bcinzeci) {
                             notifyDataSetChanged();
@@ -317,8 +364,10 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
                         clicked = false;
                         if (position == 9) {
                             finish.show();
-                            FirebaseUtils.addCoins(FirebaseUtils.getInt(FirebaseUtils.coins) + corecte * 2, coins);
-                            FirebaseUtils.addGlory(FirebaseUtils.getInt(FirebaseUtils.glory) + corecte, glory);
+                            FirebaseUtils.addCoins(FirebaseUtils.getInt(FirebaseUtils.coins) +
+                                    corecte * FirebaseUtils.getInt(nivelAtributes.getCoins_per_q()), coins);
+                            FirebaseUtils.addGlory(FirebaseUtils.getInt(FirebaseUtils.glory) +
+                                    corecte * FirebaseUtils.getInt(nivelAtributes.getGlory_per_q()), glory);
                             FirebaseUtils.setCorectAnswers(categorieId, nivelId, corecte);
                             dialog_coins.setText(String.valueOf(corecte * 2));
                             dialog_glory.setText(String.valueOf(corecte));
@@ -392,11 +441,14 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
 
     public void goToBackActivity() {
         Intent intent = new Intent(context, NivelSelectActivity.class);
-        intent.putExtra("categorie", categorie);
+        Bundle bundle = new Bundle();
+        bundle.putString("categorie", categorie);
+        bundle.putParcelable("general_atributes", generalAtributes);
+        intent.putExtra("Bundles", bundle);
         context.startActivity(intent);
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder {
         ImageView image, i1, i2, i3, i4;
         TextView question, t1, t2, t3, t4;
         ImageView r1, r2, r3, r4, v1, v2, v3, v4;
@@ -428,6 +480,33 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
             swichq = itemView.findViewById(R.id.swichq);
             cinzeci = itemView.findViewById(R.id.cinzeci);
             corect = itemView.findViewById(R.id.corect);
+
+            if (nivelAtributes.getAnswer_img_btn() != null) {
+                Picasso.get().load(nivelAtributes.getAnswer_img_btn()).into(i1);
+                Picasso.get().load(nivelAtributes.getAnswer_img_btn()).into(i2);
+                Picasso.get().load(nivelAtributes.getAnswer_img_btn()).into(i3);
+                Picasso.get().load(nivelAtributes.getAnswer_img_btn()).into(i4);
+            }
+            if (nivelAtributes.getAnswer_img_corect() != null) {
+                Picasso.get().load(nivelAtributes.getAnswer_img_corect()).into(v1);
+                Picasso.get().load(nivelAtributes.getAnswer_img_corect()).into(v2);
+                Picasso.get().load(nivelAtributes.getAnswer_img_corect()).into(v3);
+                Picasso.get().load(nivelAtributes.getAnswer_img_corect()).into(v4);
+            }
+            if (nivelAtributes.getAnswer_img_incorect() != null) {
+                Picasso.get().load(nivelAtributes.getAnswer_img_incorect()).into(r1);
+                Picasso.get().load(nivelAtributes.getAnswer_img_incorect()).into(r2);
+                Picasso.get().load(nivelAtributes.getAnswer_img_incorect()).into(r3);
+                Picasso.get().load(nivelAtributes.getAnswer_img_incorect()).into(r4);
+            }
+            if (nivelAtributes.getAnswers_txt_color() != null) {
+                t1.setTextColor(Color.parseColor(nivelAtributes.getAnswers_txt_color()));
+                t2.setTextColor(Color.parseColor(nivelAtributes.getAnswers_txt_color()));
+                t3.setTextColor(Color.parseColor(nivelAtributes.getAnswers_txt_color()));
+                t4.setTextColor(Color.parseColor(nivelAtributes.getAnswers_txt_color()));
+            }
+            if (nivelAtributes.getQuestion_color() != null)
+                question.setTextColor(Color.parseColor(nivelAtributes.getQuestion_color()));
         }
     }
 }

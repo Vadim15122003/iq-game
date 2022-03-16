@@ -1,4 +1,4 @@
-package project.rew.iqgamequiz.mainactivities.play.questions;
+package project.rew.iqgamequiz.mainactivities.play.nivels.adapters;
 
 import android.graphics.Color;
 import android.view.LayoutInflater;
@@ -17,14 +17,19 @@ import java.util.Comparator;
 import java.util.List;
 
 import project.rew.iqgamequiz.R;
+import project.rew.iqgamequiz.mainactivities.play.general_knowlage.items.GeneralAtributes;
+import project.rew.iqgamequiz.mainactivities.play.nivels.enums.RewardType;
+import project.rew.iqgamequiz.mainactivities.play.nivels.items.GivenReward;
 import project.rew.iqgamequiz.utils.FirebaseUtils;
 
 public class RewardsAdapter extends RecyclerView.Adapter<RewardsAdapter.ViewHolder> {
 
     List<GivenReward> givenRewards;
+    GeneralAtributes generalAtributes;
 
-    public RewardsAdapter(List<GivenReward> givenRewards) {
+    public RewardsAdapter(List<GivenReward> givenRewards, GeneralAtributes generalAtributes) {
         this.givenRewards = givenRewards;
+        this.generalAtributes = generalAtributes;
         if (givenRewards != null)
             Collections.sort(this.givenRewards, new Comparator<GivenReward>() {
                 @Override
@@ -43,6 +48,7 @@ public class RewardsAdapter extends RecyclerView.Adapter<RewardsAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(@NonNull RewardsAdapter.ViewHolder holder, int position) {
+
         GivenReward current = givenRewards.get(position);
         holder.conditions.setText(current.getPointsNedeed());
         if (current.isClaimed()) {
@@ -67,6 +73,7 @@ public class RewardsAdapter extends RecyclerView.Adapter<RewardsAdapter.ViewHold
         }
     }
 
+
     @Override
     public int getItemCount() {
         if (givenRewards != null)
@@ -77,7 +84,7 @@ public class RewardsAdapter extends RecyclerView.Adapter<RewardsAdapter.ViewHold
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         TextView conditions, title;
-        ImageView image, titleLogo, claimed;
+        ImageView image, titleLogo, claimed, notClaimed;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -86,6 +93,14 @@ public class RewardsAdapter extends RecyclerView.Adapter<RewardsAdapter.ViewHold
             image = itemView.findViewById(R.id.profile_img);
             titleLogo = itemView.findViewById(R.id.titleLogo);
             claimed = itemView.findViewById(R.id.claimed);
+            notClaimed = itemView.findViewById(R.id.not_claimed);
+
+            if (generalAtributes != null && generalAtributes.getClaimed_img() != null)
+                Picasso.get().load(generalAtributes.getClaimed_img()).into(claimed);
+            if (generalAtributes != null && generalAtributes.getDetails_txt_color() != null)
+                conditions.setTextColor(Color.parseColor(generalAtributes.getDetails_txt_color()));
+            if (generalAtributes != null && generalAtributes.getUnclaimed_img() != null)
+                Picasso.get().load(generalAtributes.getUnclaimed_img()).into(notClaimed);
         }
     }
 }

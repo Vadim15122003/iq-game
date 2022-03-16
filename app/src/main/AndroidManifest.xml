@@ -3,6 +3,7 @@
     package="project.rew.iqgamequiz">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:allowBackup="true"
@@ -16,7 +17,7 @@
         <activity android:name=".mainactivities.play.questions.QuestionsActivity"
             android:screenOrientation="portrait"/>
         <activity
-            android:name=".mainactivities.play.SelectGeneralKnowlage"
+            android:name=".mainactivities.play.general_knowlage.SelectGeneralKnowlage"
             android:screenOrientation="portrait" />
         <activity
             android:name=".mainactivities.settings.Settings"
@@ -29,9 +30,6 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".mainactivities.profile.ProfileActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".mainactivities.PlaySelectMode"
             android:screenOrientation="portrait" />
         <activity
             android:name=".account.RegisterActivity"
