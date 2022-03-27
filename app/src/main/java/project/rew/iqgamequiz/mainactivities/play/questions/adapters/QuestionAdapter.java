@@ -369,8 +369,8 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
                             FirebaseUtils.addGlory(FirebaseUtils.getInt(FirebaseUtils.glory) +
                                     corecte * FirebaseUtils.getInt(nivelAtributes.getGlory_per_q()), glory);
                             FirebaseUtils.setCorectAnswers(categorieId, nivelId, corecte);
-                            dialog_coins.setText(String.valueOf(corecte * 2));
-                            dialog_glory.setText(String.valueOf(corecte));
+                            dialog_coins.setText(String.valueOf(corecte *  FirebaseUtils.getInt(nivelAtributes.getCoins_per_q())));
+                            dialog_glory.setText(String.valueOf(corecte *  FirebaseUtils.getInt(nivelAtributes.getGlory_per_q())));
                             FirebaseFirestore fstore = FirebaseFirestore.getInstance();
                             fstore.collection("users").document(FirebaseUtils.email)
                                     .collection("resolved").document(categorieId)
@@ -407,6 +407,8 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
                                     }
                                 }
                             });
+                            FirebaseUtils.verifyIfTopGFirstStep(FirebaseUtils.getInt(FirebaseUtils.glory) +
+                                    corecte * FirebaseUtils.getInt(nivelAtributes.getGlory_per_q()),100);
                         }
                     }
                 }, 700);

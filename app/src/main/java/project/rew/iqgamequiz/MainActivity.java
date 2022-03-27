@@ -27,10 +27,13 @@ import java.util.Objects;
 import project.rew.iqgamequiz.account.LoginActivity;
 import project.rew.iqgamequiz.mainactivities.friends.Friends;
 import project.rew.iqgamequiz.mainactivities.profile.ProfileActivity;
+import project.rew.iqgamequiz.mainactivities.profile.items.Title;
 import project.rew.iqgamequiz.mainactivities.settings.Settings;
 import project.rew.iqgamequiz.mainactivities.topglory.TopGlory;
 import project.rew.iqgamequiz.mainactivities.play.general_knowlage.SelectGeneralKnowlage;
 import project.rew.iqgamequiz.mainactivities.profile.items.ProfileImage;
+import project.rew.iqgamequiz.mainactivities.topglory.TopGloryAdapter;
+import project.rew.iqgamequiz.mainactivities.topglory.TopGloryPerson;
 import project.rew.iqgamequiz.utils.FirebaseUtils;
 
 import static project.rew.iqgamequiz.account.LoginActivity.mAuth;
@@ -157,6 +160,27 @@ public class MainActivity extends AppCompatActivity {
                             }
                         }
                     });
+
+            /*DatabaseReference ref1=FirebaseDatabase.getInstance().getReference();
+            ref1.child("TopGlory").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if (snapshot.exists()) {
+                        for (DataSnapshot dss : snapshot.getChildren()) {
+                            if(dss.getValue().toString().equals(FirebaseUtils.email)){
+                                FirebaseUtils.lastPlace = FirebaseUtils.getInt(dss.getKey().toString());
+                                break;
+                            }
+                        }
+                    }
+
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });*/
         }
     }
 

@@ -10,6 +10,11 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -18,6 +23,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import project.rew.iqgamequiz.mainactivities.play.nivels.items.Nivel;
 import project.rew.iqgamequiz.mainactivities.profile.items.ProfileImage;
@@ -27,6 +33,7 @@ public class FirebaseUtils extends AppCompatActivity {
     public static String coins, glory, username, email;
     public static ProfileImage profileImage;
     public static Title title = new Title();
+    public static int lastPlace = 101;
     static FirebaseFirestore fstore;
 
     public static void addCoins(int x, TextView tcoins) {
@@ -154,31 +161,31 @@ public class FirebaseUtils extends AppCompatActivity {
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
-                        if (document.get("id")!=null) {
+                        if (document.get("id") != null) {
                             List<String> curently_images = ((List<String>) document.get("id"));
                             boolean exist = false;
                             if (curently_images != null) {
-                                for(String id_i:curently_images)
+                                for (String id_i : curently_images)
                                     if (id_i.equals(id)) {
                                         exist = true;
                                         break;
                                     }
                             }
-                            if(!exist)
-                            curently_images.add(id);
+                            if (!exist)
+                                curently_images.add(id);
                             documentReference.update("id", curently_images);
-                        } else{
-                            List<String> curently_images=new ArrayList<>();
+                        } else {
+                            List<String> curently_images = new ArrayList<>();
                             curently_images.add(id);
-                            Map<String,Object> images_add=new HashMap<>();
-                            images_add.put("id",curently_images);
+                            Map<String, Object> images_add = new HashMap<>();
+                            images_add.put("id", curently_images);
                             documentReference.set(images_add);
                         }
                     } else {
-                        List<String> curently_images=new ArrayList<>();
+                        List<String> curently_images = new ArrayList<>();
                         curently_images.add(id);
-                        Map<String,Object> images_add=new HashMap<>();
-                        images_add.put("id",curently_images);
+                        Map<String, Object> images_add = new HashMap<>();
+                        images_add.put("id", curently_images);
                         documentReference.set(images_add);
                     }
                 }
@@ -196,31 +203,31 @@ public class FirebaseUtils extends AppCompatActivity {
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
-                        if (document.get("id")!=null) {
+                        if (document.get("id") != null) {
                             List<String> curently_titles = ((List<String>) document.get("id"));
                             boolean exist = false;
                             if (curently_titles != null) {
-                                for(String id_t:curently_titles)
+                                for (String id_t : curently_titles)
                                     if (id_t.equals(id)) {
                                         exist = true;
                                         break;
                                     }
                             }
-                            if(!exist)
-                            curently_titles.add(id);
+                            if (!exist)
+                                curently_titles.add(id);
                             documentReference.update("id", curently_titles);
-                        } else{
-                            List<String> curently_titles=new ArrayList<>();
+                        } else {
+                            List<String> curently_titles = new ArrayList<>();
                             curently_titles.add(id);
-                            Map<String,Object> titles_add=new HashMap<>();
-                            titles_add.put("id",curently_titles);
+                            Map<String, Object> titles_add = new HashMap<>();
+                            titles_add.put("id", curently_titles);
                             documentReference.set(titles_add);
                         }
                     } else {
-                        List<String> curently_titles=new ArrayList<>();
+                        List<String> curently_titles = new ArrayList<>();
                         curently_titles.add(id);
-                        Map<String,Object> titles_add=new HashMap<>();
-                        titles_add.put("id",curently_titles);
+                        Map<String, Object> titles_add = new HashMap<>();
+                        titles_add.put("id", curently_titles);
                         documentReference.set(titles_add);
                     }
                 }
@@ -238,24 +245,77 @@ public class FirebaseUtils extends AppCompatActivity {
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
-                        if (document.get(nivel)!=null) {
+                        if (document.get(nivel) != null) {
                             List<String> rewards_completed = ((List<String>) document.get(nivel));
                             rewards_completed.add(id);
                             documentReference.update(nivel, rewards_completed);
-                        } else{
-                            List<String> rewards_completed=new ArrayList<>();
+                        } else {
+                            List<String> rewards_completed = new ArrayList<>();
                             rewards_completed.add(id);
-                            Map<String,Object> rewards_add=new HashMap<>();
-                            rewards_add.put(nivel,rewards_completed);
+                            Map<String, Object> rewards_add = new HashMap<>();
+                            rewards_add.put(nivel, rewards_completed);
                             documentReference.set(rewards_add);
                         }
                     } else {
-                        List<String> rewards_completed=new ArrayList<>();
+                        List<String> rewards_completed = new ArrayList<>();
                         rewards_completed.add(id);
-                        Map<String,Object> rewards_add=new HashMap<>();
-                        rewards_add.put(nivel,rewards_completed);
+                        Map<String, Object> rewards_add = new HashMap<>();
+                        rewards_add.put(nivel, rewards_completed);
                         documentReference.set(rewards_add);
                     }
+                }
+            }
+        });
+    }
+
+    public static void verifyIfTopG(int glor, int i) {
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+        ref.child("TopGlory").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                DataSnapshot snapshot = task.getResult();
+                if (!snapshot.child(String.valueOf(i)).exists() && i != 1)
+                    verifyIfTopG(glor, i - 1);
+                else if (!snapshot.child(String.valueOf(i)).exists() && i == 1)
+                    ref.child("TopGlory").child(String.valueOf(i)).setValue(email);
+                else {
+                    String currEmail = snapshot.child(String.valueOf(i)).getValue().toString();
+                    fstore.collection("users").document(Objects.requireNonNull(currEmail)).addSnapshotListener((value, error) -> {
+                        if (value != null) {
+                            if (value.exists()) {
+                                if (glor > getInt(String.valueOf(value.get("glory")))) {
+                                    ref.child("TopGlory").child(String.valueOf(i)).setValue(email);
+                                    if (i < 100)
+                                        ref.child("TopGlory").child(String.valueOf(i + 1)).setValue(currEmail);
+                                    if (i > 1)
+                                        verifyIfTopG(glor, i - 1);
+                                } else if (i < 100 && !snapshot.child(String.valueOf(i + 1)).exists()) {
+                                    ref.child("TopGlory").child(String.valueOf(i + 1)).setValue(email);
+                                } else if (i > 1) {
+                                    verifyIfTopG(glor, i - 1);
+                                }
+                            }
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+    public static void verifyIfTopGFirstStep(int glor, int i) {
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+        ref.child("TopGlory").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                DataSnapshot snapshot = task.getResult();
+                if (!snapshot.child(String.valueOf(i)).exists())
+                    verifyIfTopGFirstStep(glor, i - 1);
+                else if (i == 1 && !snapshot.child(String.valueOf(i)).getValue().toString().equals(email))
+                    verifyIfTopG(glor, 100);
+                else if (i > 1) {
+                    String currEmail = snapshot.child(String.valueOf(i)).getValue().toString();
+                    if (currEmail.equals(email)) verifyIfTopG(glor, i - 1);
+                    else verifyIfTopGFirstStep(glor, i - 1);
                 }
             }
         });
