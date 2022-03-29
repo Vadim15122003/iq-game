@@ -264,6 +264,29 @@
                 app:layout_constraintStart_toStartOf="@+id/settings"
                 app:layout_constraintTop_toTopOf="@+id/settings" />
 
+            <ImageView
+                android:id="@+id/newNews"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginRight="25dp"
+                android:src="@drawable/red_cercle"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="@+id/friends"
+                app:layout_constraintEnd_toEndOf="@+id/friends"
+                app:layout_constraintTop_toTopOf="@+id/friends" />
+
+            <TextView
+                android:id="@+id/newsNrs"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:autoSizeTextType="uniform"
+                android:text="1"
+                android:textAlignment="center"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="@+id/newNews"
+                app:layout_constraintEnd_toEndOf="@+id/newNews"
+                app:layout_constraintStart_toStartOf="@+id/newNews"
+                app:layout_constraintTop_toTopOf="@+id/newNews" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 

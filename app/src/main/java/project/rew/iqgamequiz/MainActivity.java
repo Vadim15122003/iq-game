@@ -22,18 +22,18 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.squareup.picasso.Picasso;
 
+import java.util.List;
 import java.util.Objects;
 
 import project.rew.iqgamequiz.account.LoginActivity;
-import project.rew.iqgamequiz.mainactivities.friends.Friends;
+import project.rew.iqgamequiz.mainactivities.friends.FriendsActivity;
+import project.rew.iqgamequiz.mainactivities.friends.items.Friend;
 import project.rew.iqgamequiz.mainactivities.profile.ProfileActivity;
 import project.rew.iqgamequiz.mainactivities.profile.items.Title;
 import project.rew.iqgamequiz.mainactivities.settings.Settings;
 import project.rew.iqgamequiz.mainactivities.topglory.TopGlory;
 import project.rew.iqgamequiz.mainactivities.play.general_knowlage.SelectGeneralKnowlage;
 import project.rew.iqgamequiz.mainactivities.profile.items.ProfileImage;
-import project.rew.iqgamequiz.mainactivities.topglory.TopGloryAdapter;
-import project.rew.iqgamequiz.mainactivities.topglory.TopGloryPerson;
 import project.rew.iqgamequiz.utils.FirebaseUtils;
 
 import static project.rew.iqgamequiz.account.LoginActivity.mAuth;
@@ -42,6 +42,8 @@ public class MainActivity extends AppCompatActivity {
 
     TextView coins, glory, username, title;
     ImageView profile_img, play, profile, friends, top_glory, settings, title_logo, title_image;
+    TextView newsNrs;
+    ImageView newNews;
     FirebaseFirestore fstore;
     DatabaseReference ref;
 
@@ -68,12 +70,15 @@ public class MainActivity extends AppCompatActivity {
         settings = findViewById(R.id.settings);
         title_logo = findViewById(R.id.title_logo);
         title_image = findViewById(R.id.title_image);
+        newNews = findViewById(R.id.newNews);
+        newsNrs = findViewById(R.id.newsNrs);
 
         getData();
+        getFriendsDetails();
 
         play.setOnClickListener(view -> openActivity(SelectGeneralKnowlage.class));
         profile.setOnClickListener(view -> openActivity(ProfileActivity.class));
-        friends.setOnClickListener(view -> openActivity(Friends.class));
+        friends.setOnClickListener(view -> openActivity(FriendsActivity.class));
         top_glory.setOnClickListener(view -> openActivity(TopGlory.class));
         settings.setOnClickListener(view -> openActivity(Settings.class));
     }
@@ -112,7 +117,7 @@ public class MainActivity extends AppCompatActivity {
                                     @Override
                                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                                         if (snapshot.exists()) {
-                                            FirebaseUtils.profileImage = new ProfileImage(documentSnapshot.get("id").toString(),snapshot.getValue().toString());
+                                            FirebaseUtils.profileImage = new ProfileImage(documentSnapshot.get("id").toString(), snapshot.getValue().toString());
                                             Picasso.get().load(FirebaseUtils.profileImage.getImage()).into(profile_img);
                                         }
                                     }
@@ -147,8 +152,7 @@ public class MainActivity extends AppCompatActivity {
                                                 FirebaseUtils.title.setImage(snapshot.child("image").getValue().toString());
                                                 title_image.setVisibility(View.VISIBLE);
                                                 Picasso.get().load(FirebaseUtils.title.getImage()).into(title_image);
-                                            }
-                                            else title_image.setVisibility(View.GONE);
+                                            } else title_image.setVisibility(View.GONE);
                                         }
                                     }
 
@@ -161,27 +165,37 @@ public class MainActivity extends AppCompatActivity {
                         }
                     });
 
-            /*DatabaseReference ref1=FirebaseDatabase.getInstance().getReference();
-            ref1.child("TopGlory").addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    if (snapshot.exists()) {
-                        for (DataSnapshot dss : snapshot.getChildren()) {
-                            if(dss.getValue().toString().equals(FirebaseUtils.email)){
-                                FirebaseUtils.lastPlace = FirebaseUtils.getInt(dss.getKey().toString());
-                                break;
+        }
+    }
+
+    private void getFriendsDetails() {
+        fstore.collection("users").document(FirebaseUtils.email)
+                .collection("friends").document("friends").get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        if (documentSnapshot.exists()) {
+                            FirebaseUtils.friendsEmails = (List<String>) documentSnapshot.get("actual_friends");
+                            FirebaseUtils.inviteFriends = (List<String>) documentSnapshot.get("inviting");
+                            FirebaseUtils.pendingFriends = (List<String>) documentSnapshot.get("pending");
+                            if (documentSnapshot.get("newFriends") != null)
+                                FirebaseUtils.newFriends = FirebaseUtils.getInt(documentSnapshot.get("newFriends").toString());
+                            else {
+                                FirebaseUtils.newFriends = 0;
+                            }
+                            if (FirebaseUtils.inviteFriends != null && FirebaseUtils.newFriends +
+                                    FirebaseUtils.inviteFriends.size() != 0) {
+                                newNews.setVisibility(View.VISIBLE);
+                                newsNrs.setVisibility(View.VISIBLE);
+                                newsNrs.setText(String.valueOf(FirebaseUtils.newFriends +
+                                        FirebaseUtils.inviteFriends.size()));
+                            } else {
+                                newNews.setVisibility(View.GONE);
+                                newsNrs.setVisibility(View.GONE);
                             }
                         }
                     }
-
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-
-                }
-            });*/
-        }
+                });
     }
 
     private void openActivity(Class<?> cls) {

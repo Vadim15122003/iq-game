@@ -31,9 +31,12 @@ import project.rew.iqgamequiz.mainactivities.profile.items.Title;
 
 public class FirebaseUtils extends AppCompatActivity {
     public static String coins, glory, username, email;
+    public static int newFriends;
     public static ProfileImage profileImage;
     public static Title title = new Title();
-    public static int lastPlace = 101;
+    public static List<String> friendsEmails = new ArrayList<>();
+    public static List<String> pendingFriends = new ArrayList<>();
+    public static List<String> inviteFriends = new ArrayList<>();
     static FirebaseFirestore fstore;
 
     public static void addCoins(int x, TextView tcoins) {
@@ -316,6 +319,241 @@ public class FirebaseUtils extends AppCompatActivity {
                     String currEmail = snapshot.child(String.valueOf(i)).getValue().toString();
                     if (currEmail.equals(email)) verifyIfTopG(glor, i - 1);
                     else verifyIfTopGFirstStep(glor, i - 1);
+                }
+            }
+        });
+    }
+
+    public static void inviteFriend(String friendEmail) {
+        fstore = FirebaseFirestore.getInstance();
+        DocumentReference documentReference = fstore.collection("users").document(email)
+                .collection("friends").document("friends");
+        documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        if (document.get("pending") != null) {
+                            List<String> pendings = ((List<String>) document.get("pending"));
+                            pendings.add(friendEmail);
+                            documentReference.update("pending", pendings);
+                        } else {
+                            List<String> pendings = new ArrayList<>();
+                            pendings.add(friendEmail);
+                            if (document.exists())
+                                documentReference.update("pending", pendings);
+                            else {
+                                Map<String, Object> pendings_add = new HashMap<>();
+                                pendings_add.put("pending", pendings);
+                                documentReference.set(pendings_add);
+                            }
+                        }
+                    } else {
+                        List<String> pendings = new ArrayList<>();
+                        pendings.add(friendEmail);
+                        if (document.exists())
+                            documentReference.update("pending", pendings);
+                        else {
+                            Map<String, Object> pendings_add = new HashMap<>();
+                            pendings_add.put("pending", pendings);
+                            documentReference.set(pendings_add);
+                        }
+                    }
+                }
+            }
+        });
+        DocumentReference documentReference1 = fstore.collection("users").document(friendEmail)
+                .collection("friends").document("friends");
+        documentReference1.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        if (document.get("inviting") != null) {
+                            List<String> invitings = ((List<String>) document.get("inviting"));
+                            invitings.add(email);
+                            documentReference1.update("inviting", invitings);
+                        } else {
+                            List<String> invitings = new ArrayList<>();
+                            invitings.add(email);
+                            if (document.exists())
+                                documentReference1.update("inviting", invitings);
+                            else {
+                                Map<String, Object> invitings_add = new HashMap<>();
+                                invitings_add.put("inviting", invitings);
+                                documentReference1.set(invitings_add);
+                            }
+                        }
+                    } else {
+                        List<String> invitings = new ArrayList<>();
+                        invitings.add(email);
+                        if (document.exists())
+                            documentReference1.update("inviting", invitings);
+                        else {
+                            Map<String, Object> invitings_add = new HashMap<>();
+                            invitings_add.put("inviting", invitings);
+                            documentReference1.set(invitings_add);
+                        }
+                    }
+                }
+            }
+        });
+        if (FirebaseUtils.pendingFriends!=null)
+            FirebaseUtils.pendingFriends.add(friendEmail);
+        else{
+            FirebaseUtils.pendingFriends = new ArrayList<>();
+            FirebaseUtils.pendingFriends.add(friendEmail);
+        }
+    }
+
+    public static void acceptFriend(String friendEmail) {
+        fstore = FirebaseFirestore.getInstance();
+        DocumentReference documentReference = fstore.collection("users").document(email)
+                .collection("friends").document("friends");
+        documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        if (document.get("inviting") != null) {
+                            List<String> invitings = ((List<String>) document.get("inviting"));
+                            for (int i = 0; i < invitings.size(); i++) {
+                                String invited = invitings.get(i);
+                                if (invited.equals(friendEmail))
+                                    invitings.remove(i);
+                            }
+                            documentReference.update("inviting", invitings);
+                        }
+
+                        if (document.get("actual_friends") != null) {
+                            List<String> actual_friends = ((List<String>) document.get("actual_friends"));
+                            actual_friends.add(friendEmail);
+                            documentReference.update("actual_friends", actual_friends);
+                        } else {
+                            List<String> actual_friends = new ArrayList<>();
+                            actual_friends.add(friendEmail);
+                            if (document.exists())
+                                documentReference.update("actual_friends", actual_friends);
+                            else {
+                                Map<String, Object> actual_friends_add = new HashMap<>();
+                                actual_friends_add.put("actual_friends", actual_friends);
+                                documentReference.set(actual_friends_add);
+                            }
+                        }
+
+                    } else {
+                        List<String> actual_friends = new ArrayList<>();
+                        actual_friends.add(friendEmail);
+                        if (document.exists())
+                            documentReference.update("actual_friends", actual_friends);
+                        else {
+                            Map<String, Object> actual_friends_add = new HashMap<>();
+                            actual_friends_add.put("actual_friends", actual_friends);
+                            documentReference.set(actual_friends_add);
+                        }
+                    }
+                }
+            }
+        });
+        DocumentReference documentReference1 = fstore.collection("users").document(friendEmail)
+                .collection("friends").document("friends");
+        documentReference1.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        if (document.get("pending") != null) {
+                            List<String> pendings = ((List<String>) document.get("pending"));
+                            for (int i = 0; i < pendings.size(); i++) {
+                                String pending = pendings.get(i);
+                                if (pending.equals(email))
+                                    pendings.remove(i);
+                            }
+                            documentReference1.update("pending", pendings);
+                        }
+                        if (document.get("actual_friends") != null) {
+                            List<String> actual_friends = ((List<String>) document.get("actual_friends"));
+                            actual_friends.add(email);
+                            documentReference1.update("actual_friends", actual_friends);
+                        } else {
+                            List<String> actual_friends = new ArrayList<>();
+                            actual_friends.add(email);
+                            if (document.exists())
+                                documentReference1.update("actual_friends", actual_friends);
+                            else {
+                                Map<String, Object> actual_friends_add = new HashMap<>();
+                                actual_friends_add.put("actual_friends", actual_friends);
+                                documentReference1.set(actual_friends_add);
+                            }
+                        }
+                        if (document.get("newFriends") != null) {
+                            int i = getInt(document.get("newFriends").toString());
+                            documentReference1.update("newFriends", i+1);
+                        } else {
+                            int i = 1;
+                            if (document.exists())
+                                documentReference1.update("newFriends", i);
+                            else {
+                                Map<String, Object> newFriends = new HashMap<>();
+                                newFriends.put("newFriends", i);
+                                documentReference1.set(newFriends);
+                            }
+                        }
+                    } else {
+                        List<String> actual_friends = new ArrayList<>();
+                        actual_friends.add(email);
+                        if (document.exists())
+                            documentReference1.update("actual_friends", actual_friends);
+                        else {
+                            Map<String, Object> actual_friends_add = new HashMap<>();
+                            actual_friends_add.put("actual_friends", actual_friends);
+                            documentReference1.set(actual_friends_add);
+                        }
+                    }
+                }
+            }
+        });
+
+        for (int i=0;i<FirebaseUtils.inviteFriends.size();i++){
+            if (FirebaseUtils.inviteFriends.get(i).equals(friendEmail))
+                FirebaseUtils.inviteFriends.remove(i);
+        }
+        if (FirebaseUtils.friendsEmails!=null)
+        FirebaseUtils.friendsEmails.add(friendEmail);
+        else{
+            FirebaseUtils.friendsEmails = new ArrayList<>();
+            FirebaseUtils.friendsEmails.add(friendEmail);
+        }
+    }
+
+    public static void setNewFriendsZero() {
+        fstore = FirebaseFirestore.getInstance();
+        DocumentReference documentReference = fstore.collection("users").document(email)
+                .collection("friends").document("friends");
+        documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        if (document.get("newFriends") != null) {
+                            int i = 0;
+                            documentReference.update("newFriends", i);
+                        } else {
+                            int i = 0;
+                            if (document.exists())
+                                documentReference.update("newFriends", i);
+                            else {
+                                Map<String, Object> newFriends = new HashMap<>();
+                                newFriends.put("newFriends", i);
+                                documentReference.set(newFriends);
+                            }
+                        }
+                    }
                 }
             }
         });
