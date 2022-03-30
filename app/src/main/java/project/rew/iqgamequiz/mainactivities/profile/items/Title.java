@@ -1,6 +1,9 @@
 package project.rew.iqgamequiz.mainactivities.profile.items;
 
-public class Title {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class Title implements Parcelable {
 
     String id,title,logo,image,color;
 
@@ -14,6 +17,26 @@ public class Title {
         this.image = image;
         this.color = color;
     }
+
+    protected Title(Parcel in) {
+        id = in.readString();
+        title = in.readString();
+        logo = in.readString();
+        image = in.readString();
+        color = in.readString();
+    }
+
+    public static final Creator<Title> CREATOR = new Creator<Title>() {
+        @Override
+        public Title createFromParcel(Parcel in) {
+            return new Title(in);
+        }
+
+        @Override
+        public Title[] newArray(int size) {
+            return new Title[size];
+        }
+    };
 
     public String getId() {
         return id;
@@ -53,5 +76,19 @@ public class Title {
 
     public void setColor(String color) {
         this.color = color;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(id);
+        parcel.writeString(title);
+        parcel.writeString(logo);
+        parcel.writeString(image);
+        parcel.writeString(color);
     }
 }

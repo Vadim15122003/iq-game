@@ -1,94 +1,118 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="20dp">
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/cardView"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:layout_marginLeft="5dp"
-        app:cardCornerRadius="15dp"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <ImageView
-            android:id="@+id/profile_img"
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardView"
             android:layout_width="80dp"
             android:layout_height="80dp"
-            android:src="@drawable/simple_user" />
+            android:layout_marginLeft="5dp"
+            app:cardCornerRadius="15dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/profile_img"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:src="@drawable/simple_user" />
+
+            <ImageView
+                android:id="@+id/title_image"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:visibility="gone" />
+        </androidx.cardview.widget.CardView>
 
         <ImageView
-            android:id="@+id/title_image"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:visibility="gone" />
-    </androidx.cardview.widget.CardView>
+            android:id="@+id/imageView2"
+            android:layout_width="220dp"
+            android:layout_height="70dp"
+            android:layout_marginStart="75dp"
+            android:layout_marginTop="5dp"
+            android:src="@drawable/player_prof"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageView
-        android:id="@+id/imageView2"
-        android:layout_width="220dp"
-        android:layout_height="70dp"
-        android:layout_marginStart="75dp"
-        android:layout_marginTop="5dp"
-        android:src="@drawable/player_prof"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        <LinearLayout
+            android:id="@+id/linearLayout8"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:gravity="center"
+            app:layout_constraintStart_toEndOf="@+id/cardView"
+            app:layout_constraintTop_toTopOf="@+id/imageView2">
+
+            <TextView
+                android:id="@+id/username"
+                style="bold"
+                android:layout_width="180dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="7dp"
+                android:singleLine="true"
+                android:text="Username"
+                android:textColor="#000000"
+                android:textSize="25sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:gravity="center"
+            app:layout_constraintBottom_toBottomOf="@+id/imageView2"
+            app:layout_constraintStart_toEndOf="@+id/cardView">
+
+            <ImageView
+                android:id="@+id/title_logo"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:layout_marginStart="7dp"
+                android:src="@drawable/title_logo" />
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="120dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:singleLine="true"
+                android:text="Title Beginner"
+                android:textSize="15sp" />
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <LinearLayout
-        android:id="@+id/linearLayout8"
-        android:layout_width="wrap_content"
-        android:layout_height="35dp"
-        android:gravity="center"
-        app:layout_constraintStart_toEndOf="@+id/cardView"
-        app:layout_constraintTop_toTopOf="@+id/imageView2">
-
-        <TextView
-            android:id="@+id/username"
-            style="bold"
-            android:layout_width="180dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="7dp"
-            android:singleLine="true"
-            android:text="Username"
-            android:textColor="#000000"
-            android:textSize="25sp" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="35dp"
-        android:gravity="center"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView2"
-        app:layout_constraintStart_toEndOf="@+id/cardView">
-
-        <ImageView
-            android:id="@+id/title_logo"
-            android:layout_width="15dp"
-            android:layout_height="15dp"
-            android:layout_marginStart="7dp"
-            android:src="@drawable/title_logo" />
-
-        <TextView
-            android:id="@+id/title"
-            android:layout_width="120dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
-            android:singleLine="true"
-            android:text="Title Beginner"
-            android:textSize="15sp" />
-    </LinearLayout>
-
-    <Button
-        android:id="@+id/addFriend"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Pending"
-        android:textSize="12dp"
+        android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/imageView2"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toEndOf="@+id/constraintLayout"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <Button
+            android:id="@+id/addFriend"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Pending"
+            android:textSize="12dp" />
+
+        <Button
+            android:id="@+id/deleteF"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Decline"
+            android:textSize="12dp"
+            android:visibility="gone" />
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

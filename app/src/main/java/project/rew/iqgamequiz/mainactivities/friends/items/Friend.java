@@ -1,10 +1,13 @@
 package project.rew.iqgamequiz.mainactivities.friends.items;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import project.rew.iqgamequiz.mainactivities.friends.enums.FriendType;
 import project.rew.iqgamequiz.mainactivities.profile.items.ProfileImage;
 import project.rew.iqgamequiz.mainactivities.profile.items.Title;
 
-public class Friend {
+public class Friend implements Parcelable {
 
     String username, email;
     ProfileImage profileImage;
@@ -21,6 +24,25 @@ public class Friend {
 
     public Friend() {
     }
+
+    protected Friend(Parcel in) {
+        username = in.readString();
+        email = in.readString();
+        profileImage = in.readParcelable(ProfileImage.class.getClassLoader());
+        title = in.readParcelable(Title.class.getClassLoader());
+    }
+
+    public static final Creator<Friend> CREATOR = new Creator<Friend>() {
+        @Override
+        public Friend createFromParcel(Parcel in) {
+            return new Friend(in);
+        }
+
+        @Override
+        public Friend[] newArray(int size) {
+            return new Friend[size];
+        }
+    };
 
     public String getUsername() {
         return username;
@@ -60,5 +82,18 @@ public class Friend {
 
     public void setFriendType(FriendType friendType) {
         this.friendType = friendType;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(username);
+        parcel.writeString(email);
+        parcel.writeParcelable(profileImage, i);
+        parcel.writeParcelable(title, i);
     }
 }

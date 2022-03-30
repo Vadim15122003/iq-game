@@ -12,10 +12,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.IQGame">
-        <activity android:name=".mainactivities.play.nivels.NivelSelectActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".mainactivities.play.questions.QuestionsActivity"
-            android:screenOrientation="portrait"/>
+        <activity android:name=".mainactivities.friends.FriendProfileActivity"></activity>
+        <activity
+            android:name=".mainactivities.play.nivels.NivelSelectActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".mainactivities.play.questions.QuestionsActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".mainactivities.play.general_knowlage.SelectGeneralKnowlage"
             android:screenOrientation="portrait" />

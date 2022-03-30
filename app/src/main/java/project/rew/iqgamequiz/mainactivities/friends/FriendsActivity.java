@@ -131,21 +131,21 @@ public class FriendsActivity extends AppCompatActivity {
                             @Override
                             public void onSuccess(DocumentSnapshot documentSnapshot) {
                                 if (documentSnapshot.exists()) {
-                                    FirebaseUtils.title.setId(documentSnapshot.get("id").toString());
+                                    Title title = new Title();
+                                    title.setId(documentSnapshot.get("id").toString());
                                     ref.child("Titles").child(documentSnapshot.get("id").toString()).addValueEventListener(new ValueEventListener() {
                                         @Override
                                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                                             if (snapshot.exists()) {
-                                                Title title = new Title();
                                                 title.setTitle(snapshot.child("title").getValue().toString());
                                                 title.setColor(snapshot.child("color").getValue().toString());
-                                                FirebaseUtils.title.setLogo(snapshot.child("logo").getValue().toString());
+                                                title.setLogo(snapshot.child("logo").getValue().toString());
                                                 if (snapshot.child("image").exists()) {
                                                     title.setImage(snapshot.child("image").getValue().toString());
                                                 }
                                                 friend.setTitle(title);
                                                 friends.add(friend);
-                                                adapter = new FriendsAdapter(friends);
+                                                adapter = new FriendsAdapter(friends,FriendsActivity.this);
                                                 friendsRecyclerView.setAdapter(adapter);
                                             }
                                         }
@@ -210,21 +210,21 @@ public class FriendsActivity extends AppCompatActivity {
                             @Override
                             public void onSuccess(DocumentSnapshot documentSnapshot) {
                                 if (documentSnapshot.exists()) {
-                                    FirebaseUtils.title.setId(documentSnapshot.get("id").toString());
+                                    Title title = new Title();
+                                    title.setId(documentSnapshot.get("id").toString());
                                     ref.child("Titles").child(documentSnapshot.get("id").toString()).addValueEventListener(new ValueEventListener() {
                                         @Override
                                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                                             if (snapshot.exists()) {
-                                                Title title = new Title();
                                                 title.setTitle(snapshot.child("title").getValue().toString());
                                                 title.setColor(snapshot.child("color").getValue().toString());
-                                                FirebaseUtils.title.setLogo(snapshot.child("logo").getValue().toString());
+                                                title.setLogo(snapshot.child("logo").getValue().toString());
                                                 if (snapshot.child("image").exists()) {
                                                     title.setImage(snapshot.child("image").getValue().toString());
                                                 }
                                                 friend.setTitle(title);
                                                 friendsInvite.add(friend);
-                                                adapterInvites = new SearchFriendsAdapter(friendsInvite);
+                                                adapterInvites = new SearchFriendsAdapter(friendsInvite, FriendsActivity.this);
                                                 friendsInviteRV.setAdapter(adapterInvites);
                                             }
                                         }
@@ -293,21 +293,21 @@ public class FriendsActivity extends AppCompatActivity {
                             @Override
                             public void onSuccess(DocumentSnapshot documentSnapshot) {
                                 if (documentSnapshot.exists()) {
-                                    FirebaseUtils.title.setId(documentSnapshot.get("id").toString());
+                                    Title title = new Title();
+                                    title.setId(documentSnapshot.get("id").toString());
                                     ref.child("Titles").child(documentSnapshot.get("id").toString()).addValueEventListener(new ValueEventListener() {
                                         @Override
                                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                                             if (snapshot.exists()) {
-                                                Title title = new Title();
                                                 title.setTitle(snapshot.child("title").getValue().toString());
                                                 title.setColor(snapshot.child("color").getValue().toString());
-                                                FirebaseUtils.title.setLogo(snapshot.child("logo").getValue().toString());
+                                                title.setLogo(snapshot.child("logo").getValue().toString());
                                                 if (snapshot.child("image").exists()) {
                                                     title.setImage(snapshot.child("image").getValue().toString());
                                                 }
                                                 friend.setTitle(title);
                                                 friendsPending.add(friend);
-                                                adapterPendings = new SearchFriendsAdapter(friendsPending);
+                                                adapterPendings = new SearchFriendsAdapter(friendsPending, FriendsActivity.this);
                                                 pendingsRv.setAdapter(adapterPendings);
                                             }
                                         }
@@ -415,7 +415,7 @@ public class FriendsActivity extends AppCompatActivity {
                                                                 if (snapshot.exists()) {
                                                                     friendAdd.setProfileImage(new ProfileImage(documentSnapshot.get("id").toString(), snapshot.getValue().toString()));
                                                                     friendAdds.add(friendAdd);
-                                                                    adapterSearch = new SearchFriendsAdapter(friendAdds);
+                                                                    adapterSearch = new SearchFriendsAdapter(friendAdds, FriendsActivity.this);
                                                                     searchRV.setAdapter(adapterSearch);
                                                                 }
                                                             }
@@ -431,7 +431,7 @@ public class FriendsActivity extends AppCompatActivity {
                                 }
                             }
                         });
-                adapterSearch = new SearchFriendsAdapter(friendAdds);
+                adapterSearch = new SearchFriendsAdapter(friendAdds, FriendsActivity.this);
                 searchRV.setAdapter(adapterSearch);
             } else {
                 searchRV.setVisibility(View.GONE);

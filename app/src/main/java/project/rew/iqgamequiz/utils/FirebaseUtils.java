@@ -1,6 +1,5 @@
 package project.rew.iqgamequiz.utils;
 
-
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -400,9 +399,9 @@ public class FirebaseUtils extends AppCompatActivity {
                 }
             }
         });
-        if (FirebaseUtils.pendingFriends!=null)
+        if (FirebaseUtils.pendingFriends != null)
             FirebaseUtils.pendingFriends.add(friendEmail);
-        else{
+        else {
             FirebaseUtils.pendingFriends = new ArrayList<>();
             FirebaseUtils.pendingFriends.add(friendEmail);
         }
@@ -492,7 +491,7 @@ public class FirebaseUtils extends AppCompatActivity {
                         }
                         if (document.get("newFriends") != null) {
                             int i = getInt(document.get("newFriends").toString());
-                            documentReference1.update("newFriends", i+1);
+                            documentReference1.update("newFriends", i + 1);
                         } else {
                             int i = 1;
                             if (document.exists())
@@ -518,13 +517,13 @@ public class FirebaseUtils extends AppCompatActivity {
             }
         });
 
-        for (int i=0;i<FirebaseUtils.inviteFriends.size();i++){
+        for (int i = 0; i < FirebaseUtils.inviteFriends.size(); i++) {
             if (FirebaseUtils.inviteFriends.get(i).equals(friendEmail))
                 FirebaseUtils.inviteFriends.remove(i);
         }
-        if (FirebaseUtils.friendsEmails!=null)
-        FirebaseUtils.friendsEmails.add(friendEmail);
-        else{
+        if (FirebaseUtils.friendsEmails != null)
+            FirebaseUtils.friendsEmails.add(friendEmail);
+        else {
             FirebaseUtils.friendsEmails = new ArrayList<>();
             FirebaseUtils.friendsEmails.add(friendEmail);
         }
@@ -557,5 +556,159 @@ public class FirebaseUtils extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    public static void declineFriend(String friendEmail) {
+        fstore = FirebaseFirestore.getInstance();
+        DocumentReference documentReference = fstore.collection("users").document(email)
+                .collection("friends").document("friends");
+        documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        if (document.get("inviting") != null) {
+                            List<String> invitings = ((List<String>) document.get("inviting"));
+                            for (int i = 0; i < invitings.size(); i++) {
+                                String invited = invitings.get(i);
+                                if (invited.equals(friendEmail))
+                                    invitings.remove(i);
+                            }
+                            documentReference.update("inviting", invitings);
+                        }
+
+                    }
+                }
+            }
+        });
+        DocumentReference documentReference1 = fstore.collection("users").document(friendEmail)
+                .collection("friends").document("friends");
+        documentReference1.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        if (document.get("pending") != null) {
+                            List<String> pendings = ((List<String>) document.get("pending"));
+                            for (int i = 0; i < pendings.size(); i++) {
+                                String pending = pendings.get(i);
+                                if (pending.equals(email))
+                                    pendings.remove(i);
+                            }
+                            documentReference1.update("pending", pendings);
+                        }
+                    }
+                }
+            }
+        });
+
+        for (int i = 0; i < FirebaseUtils.inviteFriends.size(); i++) {
+            if (FirebaseUtils.inviteFriends.get(i).equals(friendEmail))
+                FirebaseUtils.inviteFriends.remove(i);
+        }
+    }
+
+    public static void deleteFriend(String friendEmail) {
+        fstore = FirebaseFirestore.getInstance();
+        DocumentReference documentReference = fstore.collection("users").document(email)
+                .collection("friends").document("friends");
+        documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        if (document.get("actual_friends") != null) {
+                            List<String> actual_friends = ((List<String>) document.get("actual_friends"));
+                            for (int i = 0; i < actual_friends.size(); i++) {
+                                String friend = actual_friends.get(i);
+                                if (friend.equals(friendEmail))
+                                    actual_friends.remove(i);
+                            }
+                            documentReference.update("actual_friends", actual_friends);
+                        }
+                    }
+                }
+            }
+        });
+        DocumentReference documentReference1 = fstore.collection("users").document(friendEmail)
+                .collection("friends").document("friends");
+        documentReference1.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        if (document.get("actual_friends") != null) {
+                            List<String> actual_friends = ((List<String>) document.get("actual_friends"));
+                            for (int i = 0; i < actual_friends.size(); i++) {
+                                String friend = actual_friends.get(i);
+                                if (friend.equals(email))
+                                    actual_friends.remove(i);
+                            }
+                            documentReference1.update("actual_friends", actual_friends);
+                        }
+                    }
+                }
+            }
+        });
+
+        for (int i = 0; i < FirebaseUtils.friendsEmails.size(); i++) {
+            if (FirebaseUtils.friendsEmails.get(i).equals(friendEmail))
+                FirebaseUtils.friendsEmails.remove(i);
+        }
+    }
+
+    public static void cancelInvite(String friendEmail) {
+        fstore = FirebaseFirestore.getInstance();
+        DocumentReference documentReference = fstore.collection("users").document(email)
+                .collection("friends").document("friends");
+        documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        if (document.get("pending") != null) {
+                            List<String> pendings = ((List<String>) document.get("pending"));
+                            for (int i = 0; i < pendings.size(); i++) {
+                                String pending = pendings.get(i);
+                                if (pending.equals(friendEmail))
+                                    pendings.remove(i);
+                            }
+                            documentReference.update("pending", pendings);
+                        }
+                    }
+                }
+            }
+        });
+        DocumentReference documentReference1 = fstore.collection("users").document(friendEmail)
+                .collection("friends").document("friends");
+        documentReference1.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        if (document.get("inviting") != null) {
+                            List<String> invitings = ((List<String>) document.get("inviting"));
+                            for (int i = 0; i < invitings.size(); i++) {
+                                String inviting = invitings.get(i);
+                                if (inviting.equals(email))
+                                    invitings.remove(i);
+                            }
+                            documentReference1.update("inviting", invitings);
+                        }
+                    }
+                }
+            }
+        });
+
+        for (int i = 0; i < FirebaseUtils.pendingFriends.size(); i++) {
+            if (FirebaseUtils.pendingFriends.get(i).equals(friendEmail))
+                FirebaseUtils.pendingFriends.remove(i);
+        }
     }
 }

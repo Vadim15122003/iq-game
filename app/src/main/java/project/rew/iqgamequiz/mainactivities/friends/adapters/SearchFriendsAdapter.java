@@ -1,6 +1,9 @@
 package project.rew.iqgamequiz.mainactivities.friends.adapters;
 
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +12,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.squareup.picasso.Picasso;
@@ -16,6 +21,7 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 import project.rew.iqgamequiz.R;
+import project.rew.iqgamequiz.mainactivities.friends.FriendProfileActivity;
 import project.rew.iqgamequiz.mainactivities.friends.enums.FriendType;
 import project.rew.iqgamequiz.mainactivities.friends.items.Friend;
 import project.rew.iqgamequiz.utils.FirebaseUtils;
@@ -23,9 +29,11 @@ import project.rew.iqgamequiz.utils.FirebaseUtils;
 public class SearchFriendsAdapter extends RecyclerView.Adapter<SearchFriendsAdapter.ViewHolder> {
 
     List<Friend> friends;
+    Context context;
 
-    public SearchFriendsAdapter(List<Friend> friends) {
+    public SearchFriendsAdapter(List<Friend> friends, Context context) {
         this.friends = friends;
+        this.context = context;
     }
 
     @NonNull
@@ -40,6 +48,8 @@ public class SearchFriendsAdapter extends RecyclerView.Adapter<SearchFriendsAdap
         if (friends != null) {
             Friend friend = friends.get(position);
             if (friend != null) {
+                openFPOnClick(holder.cardView, friend);
+                openFPOnClick(holder.imageView, friend);
                 if (friend.getUsername() != null)
                     holder.userName.setText(friend.getUsername());
                 if (friend.getTitle() != null && friend.getTitle().getTitle() != null)
@@ -56,16 +66,16 @@ public class SearchFriendsAdapter extends RecyclerView.Adapter<SearchFriendsAdap
                 } else holder.titleImg.setVisibility(View.GONE);
                 if (friend.getFriendType() != null) {
                     if (friend.getFriendType() == FriendType.Anonym) {
+                        holder.deleteF.setVisibility(View.GONE);
                         holder.addFriend.setText("Add");
                         holder.addFriend.setBackgroundColor(Color.parseColor("#FF3700B3"));
                         holder.addFriend.setOnClickListener(v -> {
                             FirebaseUtils.inviteFriend(friend.getEmail());
                             friend.setFriendType(FriendType.Pending);
-                            holder.addFriend.setText("Pending");
-                            holder.addFriend.setBackgroundColor(Color.parseColor("#59605C"));
-                            holder.addFriend.setClickable(false);
+                            notifyDataSetChanged();
                         });
                     } else if (friend.getFriendType() == FriendType.Friend) {
+                        holder.deleteF.setVisibility(View.GONE);
                         holder.addFriend.setText("Friend");
                         holder.addFriend.setClickable(false);
                         holder.addFriend.setBackgroundColor(Color.parseColor("#047731"));
@@ -75,11 +85,18 @@ public class SearchFriendsAdapter extends RecyclerView.Adapter<SearchFriendsAdap
                         holder.addFriend.setOnClickListener(v -> {
                             FirebaseUtils.acceptFriend(friend.getEmail());
                             friend.setFriendType(FriendType.Friend);
-                            holder.addFriend.setText("Friend");
-                            holder.addFriend.setClickable(false);
-                            holder.addFriend.setBackgroundColor(Color.parseColor("#047731"));
+                            notifyDataSetChanged();
+                        });
+                        holder.deleteF.setVisibility(View.VISIBLE);
+                        holder.deleteF.setText("Decline");
+                        holder.deleteF.setBackgroundColor(Color.parseColor("#F82424"));
+                        holder.deleteF.setOnClickListener(v -> {
+                            FirebaseUtils.declineFriend(friend.getEmail());
+                            friend.setFriendType(FriendType.Anonym);
+                            notifyDataSetChanged();
                         });
                     } else if (friend.getFriendType() == FriendType.Pending) {
+                        holder.deleteF.setVisibility(View.GONE);
                         holder.addFriend.setText("Pending");
                         holder.addFriend.setBackgroundColor(Color.parseColor("#59605C"));
                         holder.addFriend.setClickable(false);
@@ -94,11 +111,22 @@ public class SearchFriendsAdapter extends RecyclerView.Adapter<SearchFriendsAdap
         return friends.size();
     }
 
+    private void openFPOnClick(View view, Friend friend) {
+        view.setOnClickListener(v -> {
+            Intent intent = new Intent(context, FriendProfileActivity.class);
+            intent.putExtra("friend", friend);
+            context.startActivity(intent);
+        });
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         ImageView profImg, titleImg, titleLogo;
         TextView userName, title;
-        Button addFriend;
+        Button addFriend, deleteF;
+        CardView cardView;
+        ImageView imageView;
+        ConstraintLayout layout;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -108,6 +136,10 @@ public class SearchFriendsAdapter extends RecyclerView.Adapter<SearchFriendsAdap
             userName = itemView.findViewById(R.id.username);
             title = itemView.findViewById(R.id.title);
             addFriend = itemView.findViewById(R.id.addFriend);
+            cardView = itemView.findViewById(R.id.cardView);
+            imageView = itemView.findViewById(R.id.imageView2);
+            deleteF = itemView.findViewById(R.id.deleteF);
+            layout = itemView.findViewById(R.id.layout);
         }
     }
 }

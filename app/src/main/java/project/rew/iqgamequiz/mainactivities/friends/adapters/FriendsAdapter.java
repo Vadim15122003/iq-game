@@ -1,5 +1,7 @@
 package project.rew.iqgamequiz.mainactivities.friends.adapters;
 
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.squareup.picasso.Picasso;
@@ -15,14 +18,17 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 import project.rew.iqgamequiz.R;
+import project.rew.iqgamequiz.mainactivities.friends.FriendProfileActivity;
 import project.rew.iqgamequiz.mainactivities.friends.items.Friend;
 
 public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHolder> {
 
     List<Friend> friends;
+    Context context;
 
-    public FriendsAdapter(List<Friend> friends) {
+    public FriendsAdapter(List<Friend> friends,Context context) {
         this.friends = friends;
+        this.context = context;
     }
 
     @NonNull
@@ -37,6 +43,8 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
         if (friends != null) {
             Friend friend = friends.get(position);
             if (friend != null) {
+                openFPOnClick(holder.cardView, friend);
+                openFPOnClick(holder.imageView, friend);
                 if (friend.getUsername() != null)
                     holder.userName.setText(friend.getUsername());
                 if (friend.getTitle() != null && friend.getTitle().getTitle() != null)
@@ -60,10 +68,20 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
         return friends.size();
     }
 
+    private void openFPOnClick(View view, Friend friend) {
+        view.setOnClickListener(v -> {
+            Intent intent = new Intent(context, FriendProfileActivity.class);
+            intent.putExtra("friend",friend);
+            context.startActivity(intent);
+        });
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         ImageView profImg, titleImg, titleLogo;
         TextView userName, title;
+        CardView cardView;
+        ImageView imageView;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -72,6 +90,8 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
             titleLogo = itemView.findViewById(R.id.title_logo);
             userName = itemView.findViewById(R.id.username);
             title = itemView.findViewById(R.id.title);
+            cardView = itemView.findViewById(R.id.cardView);
+            imageView = itemView.findViewById(R.id.imageView2);
         }
     }
 }
