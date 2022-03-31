@@ -156,6 +156,7 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
             goToBackActivity();
         });
         replay.setOnClickListener(v -> {
+            finish.cancel();
             ((Activity) context).recreate();
             viewPager.setCurrentItem(0);
         });

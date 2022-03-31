@@ -3,7 +3,6 @@ package project.rew.iqgamequiz.mainactivities.friends.adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
-import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,7 +20,7 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 import project.rew.iqgamequiz.R;
-import project.rew.iqgamequiz.mainactivities.friends.FriendProfileActivity;
+import project.rew.iqgamequiz.mainactivities.friends.friendprofile.FriendProfileActivity;
 import project.rew.iqgamequiz.mainactivities.friends.enums.FriendType;
 import project.rew.iqgamequiz.mainactivities.friends.items.Friend;
 import project.rew.iqgamequiz.utils.FirebaseUtils;

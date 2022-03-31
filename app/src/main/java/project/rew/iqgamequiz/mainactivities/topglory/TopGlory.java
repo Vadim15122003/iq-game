@@ -56,8 +56,9 @@ public class TopGlory extends AppCompatActivity {
         recyclerView = findViewById(R.id.recyclerLay);
         fstore = FirebaseFirestore.getInstance();
         ref = FirebaseDatabase.getInstance().getReference();
-
+        
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setHasFixedSize(true);
         getData();
     }
 

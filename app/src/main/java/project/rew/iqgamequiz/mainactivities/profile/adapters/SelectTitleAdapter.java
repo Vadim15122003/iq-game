@@ -49,8 +49,8 @@ public class SelectTitleAdapter extends RecyclerView.Adapter<SelectTitleAdapter.
             holder.title.setTextColor(Color.parseColor(currTitle.getColor()));
         Picasso.get().load(titles.get(position).getLogo()).into(holder.titleLogo);
         if (currTitle.getId().equals(FirebaseUtils.title.getId())) {
-            holder.cardView.setBackgroundColor(Color.parseColor("#20ED6B"));
-        } else holder.cardView.setBackgroundColor(Color.parseColor("#ffffff"));
+            holder.cardView.setCardBackgroundColor(Color.parseColor("#20ED6B"));
+        } else holder.cardView.setCardBackgroundColor(Color.parseColor("#ffffff"));
         holder.cardView.setOnClickListener(v -> {
             FirebaseUtils.setSelectedTitleImage(titles.get(position).getId());
             FirebaseUtils.title = titles.get(position);

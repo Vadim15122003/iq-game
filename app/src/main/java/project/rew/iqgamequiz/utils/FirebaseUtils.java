@@ -70,7 +70,7 @@ public class FirebaseUtils extends AppCompatActivity {
         });
     }
 
-    public static void getCurentCorectAnswers(String categoryId, String nivelId, Nivel nivel) {
+    /*public static void getCurentCorectAnswers(String categoryId, String nivelId, Nivel nivel) {
         fstore = FirebaseFirestore.getInstance();
         fstore.collection("users").document(email)
                 .collection("resolved").document(categoryId)
@@ -83,7 +83,7 @@ public class FirebaseUtils extends AppCompatActivity {
                     nivel.setCurent("0");
             }
         });
-    }
+    }*/
 
     public static void setCorectAnswers(String categoryId, String nivelId, int newCorectAnswers) {
         fstore = FirebaseFirestore.getInstance();
@@ -335,8 +335,18 @@ public class FirebaseUtils extends AppCompatActivity {
                     if (document.exists()) {
                         if (document.get("pending") != null) {
                             List<String> pendings = ((List<String>) document.get("pending"));
-                            pendings.add(friendEmail);
-                            documentReference.update("pending", pendings);
+                            boolean exist = false;
+                            if (pendings != null)
+                                for (String pendingFr : pendings) {
+                                    if (pendingFr.equals(friendEmail)) {
+                                        exist = true;
+                                        break;
+                                    }
+                                }
+                            if (!exist) {
+                                pendings.add(friendEmail);
+                                documentReference.update("pending", pendings);
+                            }
                         } else {
                             List<String> pendings = new ArrayList<>();
                             pendings.add(friendEmail);
@@ -372,8 +382,18 @@ public class FirebaseUtils extends AppCompatActivity {
                     if (document.exists()) {
                         if (document.get("inviting") != null) {
                             List<String> invitings = ((List<String>) document.get("inviting"));
-                            invitings.add(email);
-                            documentReference1.update("inviting", invitings);
+                            boolean exist = false;
+                            if (invitings != null)
+                                for (String invitingEm : invitings) {
+                                    if (invitingEm.equals(email)) {
+                                        exist = true;
+                                        break;
+                                    }
+                                }
+                            if (!exist) {
+                                invitings.add(email);
+                                documentReference1.update("inviting", invitings);
+                            }
                         } else {
                             List<String> invitings = new ArrayList<>();
                             invitings.add(email);
@@ -429,8 +449,18 @@ public class FirebaseUtils extends AppCompatActivity {
 
                         if (document.get("actual_friends") != null) {
                             List<String> actual_friends = ((List<String>) document.get("actual_friends"));
-                            actual_friends.add(friendEmail);
-                            documentReference.update("actual_friends", actual_friends);
+                            boolean exist = false;
+                            if (actual_friends != null)
+                                for (String acFriend : actual_friends) {
+                                    if (acFriend.equals(friendEmail)) {
+                                        exist = true;
+                                        break;
+                                    }
+                                }
+                            if (!exist) {
+                                actual_friends.add(friendEmail);
+                                documentReference.update("actual_friends", actual_friends);
+                            }
                         } else {
                             List<String> actual_friends = new ArrayList<>();
                             actual_friends.add(friendEmail);
@@ -476,8 +506,18 @@ public class FirebaseUtils extends AppCompatActivity {
                         }
                         if (document.get("actual_friends") != null) {
                             List<String> actual_friends = ((List<String>) document.get("actual_friends"));
-                            actual_friends.add(email);
-                            documentReference1.update("actual_friends", actual_friends);
+                            boolean exist = false;
+                            if (actual_friends != null)
+                                for (String acFriend : actual_friends) {
+                                    if (acFriend.equals(email)) {
+                                        exist = true;
+                                        break;
+                                    }
+                                }
+                            if (!exist) {
+                                actual_friends.add(email);
+                                documentReference1.update("actual_friends", actual_friends);
+                            }
                         } else {
                             List<String> actual_friends = new ArrayList<>();
                             actual_friends.add(email);

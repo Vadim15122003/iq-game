@@ -30,6 +30,7 @@ import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -51,7 +52,7 @@ public class QuestionsActivity extends AppCompatActivity {
     String categorie, categorieId;
     ViewPager2 viewPager;
     QuestionAdapter adapter;
-    TextView textView, coins, glory, tdouble_change, tswichq, tcinzeci, tcorect, txt_exit, txt_restart;
+    TextView coins, glory, tdouble_change, tswichq, tcinzeci, tcorect, txt_exit, txt_restart;
     List<Question> questions = new ArrayList<>();
     CardView c1, c2, c3, c4, c5, c6, c7, c8, c9, c10, double_change, swichq, cinzeci, corect;
     List<CardView> cards = new ArrayList<>();
@@ -145,16 +146,7 @@ public class QuestionsActivity extends AppCompatActivity {
         txt_exit = d_exit.findViewById(R.id.txt_exit);
         txt_restart = d_restart.findViewById(R.id.txt_restart);
 
-        cards.add(c1);
-        cards.add(c2);
-        cards.add(c3);
-        cards.add(c4);
-        cards.add(c5);
-        cards.add(c6);
-        cards.add(c7);
-        cards.add(c8);
-        cards.add(c9);
-        cards.add(c10);
+        cards.addAll(new ArrayList<>(Arrays.asList(c1,c2, c3, c4, c5, c6, c7, c8, c9, c10)));
 
         glory.setText(FirebaseUtils.glory);
         coins.setText(FirebaseUtils.coins);
@@ -261,6 +253,8 @@ public class QuestionsActivity extends AppCompatActivity {
             d_exit.show();
         });
         e_yes.setOnClickListener(v -> {
+            d_exit.cancel();
+            d_pause.cancel();
             Intent intent = new Intent(QuestionsActivity.this, NivelSelectActivity.class);
             Bundle bundle = new Bundle();
             bundle.putString("categorie", categorie);
@@ -273,6 +267,8 @@ public class QuestionsActivity extends AppCompatActivity {
             d_exit.cancel();
         });
         r_yes.setOnClickListener(v -> {
+            d_restart.cancel();
+            d_pause.cancel();
             recreate();
             viewPager.setCurrentItem(0);
         });

@@ -18,7 +18,7 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 import project.rew.iqgamequiz.R;
-import project.rew.iqgamequiz.mainactivities.friends.FriendProfileActivity;
+import project.rew.iqgamequiz.mainactivities.friends.friendprofile.FriendProfileActivity;
 import project.rew.iqgamequiz.mainactivities.friends.items.Friend;
 
 public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHolder> {

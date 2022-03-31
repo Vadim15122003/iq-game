@@ -121,142 +121,142 @@ public class ProfileActivity extends AppCompatActivity {
             Picasso.get().load(FirebaseUtils.title.getImage()).into(title_image);
         } else title_image.setVisibility(View.GONE);
 
-            selectPICardView.setOnClickListener(v -> {
-                selectProfileImage.show();
-            });
-            recyclerView.setLayoutManager(new GridLayoutManager(this, 3));
-            recyclerView.setHasFixedSize(true);
-            recyclerViewT.setLayoutManager(new GridLayoutManager(this, 2));
-            recyclerViewT.setHasFixedSize(true);
+        selectPICardView.setOnClickListener(v -> {
+            selectProfileImage.show();
+        });
+        recyclerView.setLayoutManager(new GridLayoutManager(this, 3));
+        recyclerView.setHasFixedSize(true);
+        recyclerViewT.setLayoutManager(new GridLayoutManager(this, 2));
+        recyclerViewT.setHasFixedSize(true);
 
-            fstore.collection("users").document(FirebaseUtils.email)
-                    .collection("images").document("images").get()
-                    .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                        @Override
-                        public void onSuccess(DocumentSnapshot documentSnapshot) {
-                            if (documentSnapshot.exists()) {
-                                imagesId = (List<String>) documentSnapshot.get("id");
-                                for (String imageId : imagesId) {
-                                    ref.child("Images").child(imageId).addValueEventListener(new ValueEventListener() {
-                                        @Override
-                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                            images.add(new ProfileImage(imageId, snapshot.getValue().toString()));
-                                            adapter = new SelectImageAdapter(images, profile_img, profile_img_select);
-                                            recyclerView.setAdapter(adapter);
-                                        }
+        fstore.collection("users").document(FirebaseUtils.email)
+                .collection("images").document("images").get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        if (documentSnapshot.exists()) {
+                            imagesId = (List<String>) documentSnapshot.get("id");
+                            for (String imageId : imagesId) {
+                                ref.child("Images").child(imageId).addValueEventListener(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                        images.add(new ProfileImage(imageId, snapshot.getValue().toString()));
+                                        adapter = new SelectImageAdapter(images, profile_img, profile_img_select);
+                                        recyclerView.setAdapter(adapter);
+                                    }
 
-                                        @Override
-                                        public void onCancelled(@NonNull DatabaseError error) {
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
 
-                                        }
-                                    });
-                                }
+                                    }
+                                });
                             }
                         }
-                    });
+                    }
+                });
 
-            fstore.collection("users").document(FirebaseUtils.email)
-                    .collection("titles").document("titles").get()
-                    .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                        @Override
-                        public void onSuccess(DocumentSnapshot documentSnapshot) {
-                            if (documentSnapshot.exists()) {
-                                titlesId = (List<String>) documentSnapshot.get("id");
-                                for (String titleId : titlesId) {
-                                    Title currentTitle = new Title();
-                                    currentTitle.setId(titleId);
-                                    ref.child("Titles").child(titleId).addValueEventListener(new ValueEventListener() {
-                                        @Override
-                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                            if (snapshot.exists()) {
-                                                currentTitle.setTitle(snapshot.child("title").getValue().toString());
-                                                currentTitle.setColor(snapshot.child("color").getValue().toString());
-                                                currentTitle.setLogo(snapshot.child("logo").getValue().toString());
-                                                if (snapshot.child("image").exists())
-                                                    currentTitle.setImage(snapshot.child("image").getValue().toString());
-                                                else currentTitle.setImage(null);
-                                                titles.add(currentTitle);
-                                                selectTitleAdapter = new SelectTitleAdapter(titles, title_select, title_logo_select,
-                                                        title, title_logo, title_image);
-                                                recyclerViewT.setAdapter(selectTitleAdapter);
-                                            }
-                                        }
-
-                                        @Override
-                                        public void onCancelled(@NonNull DatabaseError error) {
-
-                                        }
-                                    });
-                                }
-                            }
-                        }
-                    });
-
-            updateUserName.setOnClickListener(v -> {
-                String newuserName = newUserName.getText().toString();
-                if (newuserName.length() < 4) {
-                    newUserName.setError("Enter a userName wich minim 4 charcaters");
-                } else if (newuserName.length() > 10) {
-                    newUserName.setError("Enter a userName wich maxim 10 charcaters");
-                } else if (newuserName.contains(" ")) {
-                    newUserName.setError("Enter a userName wichout space");
-                } else {
-                    progressDialog.setMessage("Updating username...");
-                    progressDialog.setTitle("Update");
-                    progressDialog.setCanceledOnTouchOutside(false);
-                    progressDialog.show();
-
-                    fstore.collection("users").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                        @Override
-                        public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                            boolean exist = false;
-                            if (!queryDocumentSnapshots.isEmpty()) {
-                                for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
-                                    if (documentSnapshot.exists()) {
-                                        String username = documentSnapshot.get("username").toString();
-                                        if (username.equals(newuserName)) {
-                                            exist = true;
-                                            progressDialog.dismiss();
-                                            newUserName.setError("A person wich this userName already exist");
+        fstore.collection("users").document(FirebaseUtils.email)
+                .collection("titles").document("titles").get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        if (documentSnapshot.exists()) {
+                            titlesId = (List<String>) documentSnapshot.get("id");
+                            for (String titleId : titlesId) {
+                                Title currentTitle = new Title();
+                                currentTitle.setId(titleId);
+                                ref.child("Titles").child(titleId).addValueEventListener(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                        if (snapshot.exists()) {
+                                            currentTitle.setTitle(snapshot.child("title").getValue().toString());
+                                            currentTitle.setColor(snapshot.child("color").getValue().toString());
+                                            currentTitle.setLogo(snapshot.child("logo").getValue().toString());
+                                            if (snapshot.child("image").exists())
+                                                currentTitle.setImage(snapshot.child("image").getValue().toString());
+                                            else currentTitle.setImage(null);
+                                            titles.add(currentTitle);
+                                            selectTitleAdapter = new SelectTitleAdapter(titles, title_select, title_logo_select,
+                                                    title, title_logo, title_image);
+                                            recyclerViewT.setAdapter(selectTitleAdapter);
                                         }
                                     }
-                                }
-                                if (!exist) {
-                                    fstore.collection("users").document(FirebaseUtils.email).update("username", newuserName).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                        @Override
-                                        public void onSuccess(Void unused) {
-                                            FirebaseUtils.username = newuserName;
-                                            username.setText(FirebaseUtils.username);
-                                            progressDialog.dismiss();
-                                        }
-                                    }).addOnFailureListener(new OnFailureListener() {
-                                        @Override
-                                        public void onFailure(@NonNull Exception e) {
-                                            progressDialog.dismiss();
-                                            Toast.makeText(ProfileActivity.this, e.getMessage().toString(), Toast.LENGTH_SHORT).show();
-                                        }
-                                    });
-                                }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
+
+                                    }
+                                });
                             }
                         }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            progressDialog.dismiss();
-                            Toast.makeText(ProfileActivity.this, "" + e.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                });
+
+        updateUserName.setOnClickListener(v -> {
+            String newuserName = newUserName.getText().toString();
+            if (newuserName.length() < 4) {
+                newUserName.setError("Enter a userName wich minim 4 charcaters");
+            } else if (newuserName.length() > 10) {
+                newUserName.setError("Enter a userName wich maxim 10 charcaters");
+            } else if (newuserName.contains(" ")) {
+                newUserName.setError("Enter a userName wichout space");
+            } else {
+                progressDialog.setMessage("Updating username...");
+                progressDialog.setTitle("Update");
+                progressDialog.setCanceledOnTouchOutside(false);
+                progressDialog.show();
+
+                fstore.collection("users").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        boolean exist = false;
+                        if (!queryDocumentSnapshots.isEmpty()) {
+                            for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                                if (documentSnapshot.exists()) {
+                                    String username = documentSnapshot.get("username").toString();
+                                    if (username.equals(newuserName)) {
+                                        exist = true;
+                                        progressDialog.dismiss();
+                                        newUserName.setError("A person wich this userName already exist");
+                                    }
+                                }
+                            }
+                            if (!exist) {
+                                fstore.collection("users").document(FirebaseUtils.email).update("username", newuserName).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void unused) {
+                                        FirebaseUtils.username = newuserName;
+                                        username.setText(FirebaseUtils.username);
+                                        progressDialog.dismiss();
+                                    }
+                                }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        progressDialog.dismiss();
+                                        Toast.makeText(ProfileActivity.this, e.getMessage().toString(), Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                            }
                         }
-                    });
-                }
-            });
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        progressDialog.dismiss();
+                        Toast.makeText(ProfileActivity.this, "" + e.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+        });
 
-            selectTCardView.setOnClickListener(v -> {
-                selectTitle.show();
-            });
-        }
-
-        @Override
-        public void onBackPressed () {
-            Intent intent = new Intent(ProfileActivity.this, MainActivity.class);
-            startActivity(intent);
-        }
+        selectTCardView.setOnClickListener(v -> {
+            selectTitle.show();
+        });
     }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(ProfileActivity.this, MainActivity.class);
+        startActivity(intent);
+    }
+}

@@ -12,7 +12,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.IQGame">
-        <activity android:name=".mainactivities.friends.FriendProfileActivity"></activity>
+        <activity android:name=".mainactivities.friends.personaltest.PersonalQuestionActivity"></activity>
+        <activity android:name=".mainactivities.friends.friendprofile.FriendProfileActivity" />
         <activity
             android:name=".mainactivities.play.nivels.NivelSelectActivity"
             android:screenOrientation="portrait" />
